@@ -1,5 +1,5 @@
 ## Overview
-**ofxSurfingPlayer** is an add-on for openFrameworks with a basic Bpm based timer.
+**ofxSurfingPlayer** is a simple add-on for openFrameworks with a basic Bpm based timer with callbacks.
 
 ## Screenshot
 ![Screenshot](Capture.PNG?raw=true "Screenshot")
