@@ -4,6 +4,8 @@
 ## Screenshot
 ![Screenshot](Capture.PNG?raw=true "Screenshot")
 
+![Screenshot](Capture_ImGui.PNG?raw=true "Screenshot")
+
 ## Features
 - ofParameter based. 
 - ImGui widgets populator can be enabled.
