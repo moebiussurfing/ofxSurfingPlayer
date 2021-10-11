@@ -8,6 +8,78 @@
 
 //----
 
+
+/*
+
+	// SNIPPETS
+
+	// Player Code to copy/paste.
+	// Look the Example too.
+
+	// Player
+#ifdef USE__OFX_SURFING_PRESETS__OFX_SURFING_PLAYER
+#endif
+
+	//.h
+	SurfingPlayer surfingPlayer;
+	ofEventListener listener_Beat;
+	ofParameter<bool> bRandomPlay{ "Random", false };
+	std::vector<std::string> randomTypesPlay = { "Next Index", "Random Index", "Random Params" };
+	ofParameter<int> randomTypePlay{ "Type", 0, 0, 2 };
+
+	//--
+
+	// Setup()
+	params_AppSettings.add(surfingPlayer.params_AppSettings);
+	//--------------------------------------------------------------
+	listener_Beat = surfingPlayer.bPlayerBeat.newListener([this](bool &b) {
+		ofLogNotice("BEAT: ") << (b ? "TRUE" : "FALSE");
+
+		if (surfingPlayer.bPlay)
+		{
+			switch (randomTypePlay) // We can decide what to do when Beat calls!
+			{
+			case 0: doLoadNext(); break;
+			case 1: doRandomizeIndex(); break;
+			case 2: doRandomizeParams(); break;
+			default: break;
+			}
+		}
+	});
+
+	//--
+
+	// Draw()
+	// Gui
+	ofxImGuiSurfing::AddToggleRoundedButton(surfingPlayer.bGui_Player);
+	if (surfingPlayer.bGui_Player) 
+	{
+		ofxImGuiSurfing::AddCombo(randomTypePlay, randomTypesPlay);
+	}
+
+	//--
+
+	// Gui
+	if (surfingPlayer.bGui_Player)
+	{
+		ImGuiWindowFlags flagw = ImGuiWindowFlags_None;
+		if (guiManager.bAutoResize) flagw += ImGuiWindowFlags_AlwaysAutoResize;
+
+		if (guiManager.beginWindow(surfingPlayer.bGui_Player, flagw))
+		{
+			surfingPlayer.draw();
+		}
+		guiManager.endWindow();
+	}
+
+	//--
+
+	// KeyPessed()
+	if (key == OF_KEY_RETURN) { surfingPlayer.setPlayToggle(); }
+
+*/
+
+
 #ifdef USE__OFX_SURFING_IM_GUI
 #include "ofxSurfingImGui.h"
 #endif
@@ -41,14 +113,14 @@ public:
 public:
 	ofParameter<bool> bGui_Player{ "Player", false };
 	ofParameterGroup params_Player{ "Player" };
-	ofParameter<bool> bPlayerBeat; // trig beat
+	ofParameter<bool> bPlayerBeat; // Trig beat
+	ofParameter<bool> bPlay; // Play
 
 private:
 	void Changed_Params_Player(ofAbstractParameter &e);
 
 private:
 	ofParameter<bool> bMinimize_Player;
-	ofParameter<bool> bPlay; // Play
 	ofParameter<float> playerDurationBpm; // Bpm
 	ofParameter<int> playerDuration;
 	ofParameter<float> playerProgress{ "%", 0, 0, 1 };
