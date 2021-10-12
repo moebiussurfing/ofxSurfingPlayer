@@ -10,6 +10,7 @@
 - ofParameter based. 
 - ofxGui or ImGui modes.  
 - Tap Tempo Engine  
+- Tick Sounds
 
 ## Usage
 - Look the examples.
