@@ -2,17 +2,17 @@
 **ofxSurfingPlayer** is a simple add-on for openFrameworks with a basic Bpm based timer with callbacks.
 
 ## Screenshot
-![Screenshot](Capture.PNG?raw=true "Screenshot")
+![Screenshot](Capture.PNG?raw=true "ofxGui")  
 
-![Screenshot](Capture_ImGui.PNG?raw=true "Screenshot")
+![Screenshot](Capture_ImGui.PNG?raw=true "ImGui")  
 
 ## Features
 - ofParameter based. 
-- ImGui widgets populator can be enabled.
-- Handles settings.
+- ofxGui or ImGui modes.  
+- Tap Tempo Engine  
 
 ## Usage
-- Look the example.
+- Look the examples.
 
 ## Dependencies
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
