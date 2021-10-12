@@ -53,11 +53,15 @@ void SurfingPlayer::setup() {
 	ofAddListener(params_Player.parameterChangedE(), this, &SurfingPlayer::Changed_Params_Player);
 
 	//-
-	
+
 	// Gui
+
+#ifdef USE__OFX_IM_GUI_INSTANTIATED 
+	guiManager.setup(ofxImGuiSurfing::IM_GUI_MODE_INSTANTIATED);
+#else
 #ifdef USE__OFX_SURFING_IM_GUI
 	guiManager.setup(ofxImGuiSurfing::IM_GUI_MODE_NOT_INSTANTIATED); // -> windows will be handle externally
-	//guiManager.setup(ofxImGuiSurfing::IM_GUI_MODE_INSTANTIATED);
+#endif
 #endif
 
 	//--
@@ -98,20 +102,31 @@ void SurfingPlayer::update(ofEventArgs & args) {
 
 //--------------------------------------------------------------
 void SurfingPlayer::draw() {
+
 	if (!bGui_Player) return;
 
+	//--
+
+#ifdef USE__OFX_IM_GUI_INSTANTIATED 
+	guiManager.begin();
+
+	//-
+
+	ImGuiWindowFlags flagw = ImGuiWindowFlags_None;
+	if (guiManager.bAutoResize) flagw += ImGuiWindowFlags_AlwaysAutoResize;
+
+	//IMGUI_SUGAR__WINDOWS_CONSTRAINTS;
+
+	bool bopen = (guiManager.beginWindow(bGui_Player, flagw));
+
+#endif
+
+	//--
+
+	if (bopen)
+
 #ifdef USE__OFX_SURFING_IM_GUI
-	//ImGuiWindowFlags flagw = ImGuiWindowFlags_None;
-	//if (guiManager.bAutoResize) flagw += ImGuiWindowFlags_AlwaysAutoResize;
-
-	////IMGUI_SUGAR__WINDOWS_CONSTRAINTS;
-	////IMGUI_SUGAR__WINDOWS_CONSTRAINTS_SMALL;
-
-	//if (guiManager.beginWindow(bGui_Player, flagw))
 	{
-		guiManager.refreshLayout();
-		guiManager.resetUniqueNames();
-
 		float _w1 = ofxImGuiSurfing::getWidgetsWidth(1);
 		float _w2 = ofxImGuiSurfing::getWidgetsWidth(2);
 		float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
@@ -129,7 +144,6 @@ void SurfingPlayer::draw() {
 		if (!bMinimize_Player) {
 			guiManager.Add(playerDurationBpm, OFX_IM_SLIDER);
 			IMGUI_SUGAR__SLIDER_ADD_MOUSE_WHEEL(playerDurationBpm, 5);
-			//ofxImGuiSurfing::AddMouseWheel(playerDurationBpm, 5);
 		}
 
 		guiManager.Add(playerDuration, OFX_IM_SLIDER);
@@ -144,7 +158,18 @@ void SurfingPlayer::draw() {
 
 		if (!bMinimize_Player) guiManager.Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
 	}
-	//guiManager.endWindow();
+#endif
+
+	//--
+
+#ifdef USE__OFX_IM_GUI_INSTANTIATED 
+	if (bopen) {
+		guiManager.endWindow();
+	}
+
+	//-
+
+	guiManager.end();
 #endif
 }
 
@@ -175,7 +200,7 @@ void SurfingPlayer::Changed_Params_Player(ofAbstractParameter &e)
 {
 	string name = e.getName();
 
-	if (name != " ") ofLogNotice() << __FUNCTION__ << name << " : " << e;
+	if (name != "%") ofLogNotice() << __FUNCTION__ << " " << name << " : " << e;
 
 	if (0) {}
 
