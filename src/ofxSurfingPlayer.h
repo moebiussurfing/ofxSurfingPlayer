@@ -9,7 +9,6 @@ TODO:
 + get dropdown target from surfingPresets
 + get ImGui circle widget from ofxBeatClock
 	+ drag widget beat circle ?
-+ tick sound ?
 + use internal timer from tap widget ?
 + key commands
 	+ key toggle enabler
@@ -179,7 +178,8 @@ public:
 	//--------------------------------------------------------------
 	void setNamePanel(string name) {
 		namePanel = name;
-		bGui_Player.setName("Player " + namePanel);
+		bGui_Player.setName(namePanel);
+		//bGui_Player.setName("Player " + namePanel);
 	}
 	//--------------------------------------------------------------
 	void setNameSubPanel(string name) {
