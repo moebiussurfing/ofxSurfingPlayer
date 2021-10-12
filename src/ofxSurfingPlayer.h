@@ -2,6 +2,21 @@
 
 #include "ofMain.h"
 
+/*
+
+TODO:
+
++ get dropdown target from surfingPresets
++ get ImGui circle widget from ofxBeatClock
+	+ drag widget beat circle ?
++ tick sound ?
++ use internal timer from tap widget ?
++ key commands
+	+ key toggle enabler
+
+*/
+
+
 //----
 
 #define USE__OFX_SURFING_IM_GUI // -> Optional. Uncomment to use inside an add-on with ImGui add-on.
@@ -54,7 +69,7 @@
 	// Draw()
 	// Gui
 	ofxImGuiSurfing::AddToggleRoundedButton(surfingPlayer.bGui_Player);
-	if (surfingPlayer.bGui_Player) 
+	if (surfingPlayer.bGui_Player)
 	{
 		ofxImGuiSurfing::AddCombo(randomTypePlay, randomTypesPlay);
 	}
@@ -88,6 +103,9 @@
 
 #include "ofxSurfingHelpers.h" // -> For the settings but can be easely removed.
 
+#include "BpmTapTempo.h"
+#include "CircleBeat.h"
+
 class SurfingPlayer
 {
 public:
@@ -113,7 +131,7 @@ public:
 
 	// Exposed to Gui
 public:
-	ofParameter<bool> bGui_Player{ "Player", false };
+	ofParameter<bool> bGui_Player{ "Player", true };
 	ofParameterGroup params_Player{ "Player" };
 	ofParameter<bool> bPlayerBeat; // Trig beat
 	ofParameter<bool> bPlay; // Play
@@ -128,7 +146,14 @@ private:
 	ofParameter<float> playerProgress{ "%", 0, 0, 1 };
 	ofParameter<int> index{ "index", 0, 0, 8 }; // trig randomize index
 	uint32_t playerTimerStarted;
-	const float MAX_DURATION_RATIO = 2.0f;
+
+	const float MAX_DURATION_RATIO = 1.0f;
+	//const float MAX_DURATION_RATIO = 2.0f;
+
+	BpmTapTempo bpmTapTempo;
+	ofEventListener listener_TapBpm;
+	void Changed_TapBpm();
+	CircleBeat circleBeat;
 
 private:
 	uint32_t timePlayer;
@@ -142,6 +167,23 @@ public:
 	//--------------------------------------------------------------
 	void setPlayToggle() {
 		bPlay = !bPlay;
+	}
+
+	//-
+
+	// Custom label for ImGui panels
+private:
+	string namePanel = "-1";
+	string nameSubPanel = "-1";
+public:
+	//--------------------------------------------------------------
+	void setNamePanel(string name) {
+		namePanel = name;
+		bGui_Player.setName("Player " + namePanel);
+	}
+	//--------------------------------------------------------------
+	void setNameSubPanel(string name) {
+		nameSubPanel = name;
 	}
 };
 

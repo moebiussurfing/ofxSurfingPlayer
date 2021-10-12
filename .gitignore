@@ -560,3 +560,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+2_PlayerImGui/bin/imgui.ini
+2_PlayerImGui/bin/data/SurfingPlayer_Settings.json

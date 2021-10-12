@@ -9,7 +9,6 @@ class ofApp : public ofBaseApp{
 
 	public:
 		void setup();
-		void update();
 		void draw();
 		void keyPressed(int key);
 
@@ -18,7 +17,7 @@ class ofApp : public ofBaseApp{
 
 		ofxPanel gui;
 
-		float a = 1;
-
 		ofxSurfing_ImGui_Manager guiManager;
+
+		float a = 1;
 };

@@ -19,6 +19,45 @@ SurfingPlayer::~SurfingPlayer() {
 //--------------------------------------------------------------
 void SurfingPlayer::setup() {
 
+	//--
+
+	// Tap Tempo Eengine
+	{
+		bpmTapTempo.setup();
+
+		// callback to link bpm's
+		listener_TapBpm = bpmTapTempo.bpm.newListener([this](float &)
+		{
+			this->Changed_TapBpm();
+		});
+
+		// beat circle
+		circleBeat.setAlpha(0.4);
+		circleBeat.setSpeed(0.5);
+	}
+
+	// Beat
+	int w = ofGetWidth();
+	int h = ofGetHeight();
+	float _cell = 60;
+	float _pad = 10;
+	float _size = _cell * 0.5f;
+	circleBeat.setRadius(_size);
+	circleBeat.setPosition(glm::vec2(w / 2.f, h - (_size + 10)));
+
+	//----
+
+//#ifdef OFX_SURFING_CAMERA__USE_INTERNAL_PLAYER
+//		// callback to link bpm's
+//	listener_Bpm = animatorFloat.bpmSpeed.newListener([this](float &)
+//	{
+//		this->Changed_AnimatorBpm();
+//	});
+//#endif
+
+
+	//----	
+
 	bPlay.set("Play", false);
 	playerDurationBpm.set("Bpm", 120, 10, 400);
 	playerDuration.set("ms", 0, 0, 5000);
@@ -33,6 +72,10 @@ void SurfingPlayer::setup() {
 	params_Player.add(index);
 	params_Player.add(playerProgress);
 	params_Player.add(bPlayerBeat);
+	//params_Player.add(bpmTapTempo.params);
+	//params_Player.add(bpmTapTempo.bpm);//simple clock
+
+	//-
 
 	// App Settings
 	params_AppSettings.setName("SurfingPlayer");
@@ -43,6 +86,8 @@ void SurfingPlayer::setup() {
 	params_AppSettings.add(playerDuration);
 	params_AppSettings.add(index);
 	params_AppSettings.add(bMinimize_Player);
+	//params_AppSettings.add(bpmTapTempo.params);
+	//params_AppSettings.add(bpmTapTempo.bpm);//simple clock
 
 	// Exclude
 	bPlay.setSerializable(false);
@@ -98,6 +143,42 @@ void SurfingPlayer::update(ofEventArgs & args) {
 	{
 		playerProgress = 0;
 	}
+
+
+
+	//--
+
+	// Player beat
+
+	circleBeat.update();
+	bpmTapTempo.update();
+
+	//if (bBeatPlay)
+	//{
+	//	uint64_t t = ofGetElapsedTimeMillis();
+	//	uint64_t e = t - timelastBeat;
+	//	ofLogVerbose(__FUNCTION__) << "Play time:" << e;
+	//	int dur = bpmTapTempo.getDurationBar();
+	//	beatProgress = ofMap(e, 0, dur, 0, 1, true);
+
+	//	if (e >= dur)
+	//	{
+	//		bBeatBang = true;
+	//	}
+	//	else {
+	//		//bug
+	//		//bBeatBang = false;
+	//	}
+	//}
+
+	////--
+
+	////if (isBeatBang())
+	//if (bBeatBang)
+	//{
+
+	//	
+	//}
 }
 
 //--------------------------------------------------------------
@@ -106,6 +187,12 @@ void SurfingPlayer::draw() {
 	if (!bGui_Player) return;
 
 	//--
+
+	circleBeat.draw();
+
+	//--
+
+	// ImGui
 
 #ifdef USE__OFX_IM_GUI_INSTANTIATED 
 	guiManager.begin();
@@ -127,13 +214,22 @@ void SurfingPlayer::draw() {
 
 #ifdef USE__OFX_SURFING_IM_GUI
 	{
+		// Sub label
+		if (nameSubPanel != "-1")
+		{
+			ImGui::Text(nameSubPanel.c_str());
+			ImGui::Spacing();
+		}
+
+		//-
+
 		float _w1 = ofxImGuiSurfing::getWidgetsWidth(1);
 		float _w2 = ofxImGuiSurfing::getWidgetsWidth(2);
 		float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
 
 		if (guiManager.Add(bMinimize_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL)) {}
 
-		ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 2 * _h, "PLAYING", "PLAY", true, 1 - getPlayerPct());
+		ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 3.0f * _h, "PLAYING", "PLAY", true, 1 - getPlayerPct());
 
 		if (!bPlay || !bMinimize_Player) {
 			guiManager.Add(bPlayerBeat, OFX_IM_BUTTON_BIG);
@@ -156,7 +252,14 @@ void SurfingPlayer::draw() {
 			if (ImGui::Button("Reset", ImVec2(_w1, _h))) { playerDurationBpm = 120; }
 		}
 
-		if (!bMinimize_Player) guiManager.Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
+		// Tap
+		//guiManager.Add(bpmTapTempo.bpm, OFX_IM_STEPPER);
+		if (ImGui::Button("TAP", ImVec2(_w1, 2 * _h))) {
+			bpmTapTempo.bang();
+		}
+
+		//if (!bMinimize_Player) guiManager.Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
+		guiManager.Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
 	}
 #endif
 
@@ -224,6 +327,8 @@ void SurfingPlayer::Changed_Params_Player(ofAbstractParameter &e)
 		// 60,000 ms (1 minute) / Tempo (BPM) = Delay Time in ms for quarter-note beats
 		playerDuration = (MAX_DURATION_RATIO * 60000.f) / playerDurationBpm;
 
+		if(bpmTapTempo.bpm != playerDurationBpm) bpmTapTempo.bpm = playerDurationBpm;
+
 		ofLogNotice(__FUNCTION__) << playerDuration << " : " << playerDurationBpm << "bpm";
 	}
 
@@ -240,7 +345,22 @@ void SurfingPlayer::Changed_Params_Player(ofAbstractParameter &e)
 		ofLogVerbose(__FUNCTION__) << "Beat";
 
 		//colorClient.nextPreset();
+
+		circleBeat.bang();
 	}
+}
+
+//--------------------------------------------------------------
+void SurfingPlayer::Changed_TapBpm() {
+	////TODO:
+	//return;
+
+	ofLogNotice(__FUNCTION__) << bpmTapTempo.bpm;
+	playerDurationBpm = bpmTapTempo.bpm;
+
+	//setBpm(bpmTapTempo.bpm);
+	
+	////doPlayRandomizer();
 }
 
 //--------------------------------------------------------------
