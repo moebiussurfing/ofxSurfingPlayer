@@ -11,7 +11,7 @@ void ofApp::setup() {
 
 	//--------------------------------------------------------------
 	listener_Beat = surfingPlayer.bPlayerBeatBang.newListener([this](bool &b) {
-		ofLogNotice("bPlayerBeatBang: ") << (b ? "TRUE" : "FALSE");
+		ofLogNotice("Beat Bang : ") << (b ? "TRUE" : "FALSE");
 
 		// Do not know wich type triggered, just a bang.
 		// Do something
@@ -24,17 +24,27 @@ void ofApp::setup() {
 
 	// Different Triggers with a dropdown selector
 	// we pass a string vector with the names:
-	surfingPlayer.setTrigTypesNames({ "Type #1 - Preset", "Type #2 - Random", "Type#3 - Params" });
+	surfingPlayer.setTrigTypesNames({ "Type #1 - Preset", "Type #2 - Random", "Type #3 - Params" });
 
 	// We will be notified when the type selector changed:
 	//--------------------------------------------------------------
 	listener_Type = surfingPlayer.typeTrig.newListener([this](int &i) {
-		ofLogNotice("typeTrig: ") << i;
+		ofLogNotice("Target type : ") << i;
 
 		// Do something
 		a = 1.f; // Bg alpha to max / white (flash)
 	});
 
+	//-
+
+	// We will be notified when Bpm changed:
+	//--------------------------------------------------------------
+	listener_Bpm = surfingPlayer.durationBpm.newListener([this](float &f) {
+		ofLogNotice("Bpm : ") << f;
+
+		// Do something
+		a = .25f; // Bg alpha touch / grey (flash)
+	});
 }
 
 //--------------------------------------------------------------

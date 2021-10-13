@@ -24,6 +24,7 @@ class ofApp : public ofBaseApp{
 
 		ofEventListener listener_Beat; // Be notified when Bang happens
 		ofEventListener listener_Type; // Be notified when type changes
+		ofEventListener listener_Bpm; // Be notified when Bpm changes
 
 		ofxSurfing_ImGui_Manager guiManager;
 

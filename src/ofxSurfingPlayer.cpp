@@ -45,35 +45,26 @@ void SurfingPlayer::setup() {
 	circleBeat.setRadius(_size);
 	circleBeat.setPosition(glm::vec2(w / 2.f, h - (_size + 10)));
 
-	//----
-
-//#ifdef OFX_SURFING_CAMERA__USE_INTERNAL_PLAYER
-//		// callback to link bpm's
-//	listener_Bpm = animatorFloat.bpmSpeed.newListener([this](float &)
-//	{
-//		this->Changed_AnimatorBpm();
-//	});
-//#endif
-
-
 	//----	
 
 	bPlay.set("Play", false);
-	playerDurationBpm.set("Bpm", 120, 10, 400);
-	playerDuration.set("ms", 0, 0, 5000);
+	bTap.set("Tap", false);
+	durationBpm.set("Bpm", 120, 10, 400);
+	durationTime.set("ms", 0, 0, 5000);
 	bPlayerBeatBang.set("Beat", false); // -> We defined beat to call "load next" palette
 	bMinimize_Player.set("Minimize", false);
 
 	// Gui
 	params_Player.setName("SurfingPlayer");
 	params_Player.add(bPlay);
-	params_Player.add(playerDurationBpm);
-	params_Player.add(playerDuration);
-	params_Player.add(index);
+	params_Player.add(bTap);
+	params_Player.add(durationBpm);
+	params_Player.add(durationTime);
 	params_Player.add(playerProgress);
 	params_Player.add(bPlayerBeatBang);
-	//params_Player.add(bpmTapTempo.params);
-	//params_Player.add(bpmTapTempo.bpm);//simple clock
+	params_Player.add(bTap);
+	//params_Player.add(playerDurationRatio);
+	//params_Player.add(index);
 
 	//-
 
@@ -82,22 +73,20 @@ void SurfingPlayer::setup() {
 	params_AppSettings.add(bGui_Player);
 	params_AppSettings.add(bPlay);
 	params_AppSettings.add(bPlayerBeatBang);
-	params_AppSettings.add(playerDurationBpm);
-	params_AppSettings.add(playerDuration);
-	params_AppSettings.add(index);
+	params_AppSettings.add(durationBpm);
+	params_AppSettings.add(durationTime);
 	params_AppSettings.add(bMinimize_Player);
-	//params_AppSettings.add(bpmTapTempo.params);
-	//params_AppSettings.add(bpmTapTempo.bpm);//simple clock
 
 	// Exclude
 	bPlay.setSerializable(false);
+	bTap.setSerializable(false);
 	playerProgress.setSerializable(false);
-	index.setSerializable(false);
 	bPlayerBeatBang.setSerializable(false);
+	//index.setSerializable(false);
 
 	ofAddListener(params_Player.parameterChangedE(), this, &SurfingPlayer::Changed_Params_Player);
 
-	//-
+	//--
 
 	// Gui
 
@@ -112,7 +101,7 @@ void SurfingPlayer::setup() {
 	//--
 
 	// Startup
-	playerDurationBpm = 120;
+	durationBpm = 120;
 
 	ofxSurfingHelpers::loadGroup(params_AppSettings);
 }
@@ -124,16 +113,16 @@ void SurfingPlayer::update(ofEventArgs & args) {
 	{
 		uint64_t t = ofGetElapsedTimeMillis();
 		timePlayer = t - playerTimerStarted;
-		playerProgress = ofMap(timePlayer, 0, playerDuration, 0, 1, true);
+		playerProgress = ofMap(timePlayer, 0, durationTime, 0, 1, true);
 
-		if (timePlayer >= playerDuration)
+		if (timePlayer >= durationTime)
 		{
 			ofLogNotice(__FUNCTION__) << "Done : " << timePlayer;
 
 			playerTimerStarted = ofGetElapsedTimeMillis();
 
-			// Randomize
-			index = ofRandom(index.getMin(), index.getMax() + 1);
+			//// Randomize
+			//index = ofRandom(index.getMin(), index.getMax() + 1);
 
 			// Beat
 			bPlayerBeatBang = true;
@@ -144,13 +133,11 @@ void SurfingPlayer::update(ofEventArgs & args) {
 		playerProgress = 0;
 	}
 
-
-
 	//--
 
 	// Player beat
 
-	circleBeat.update();
+	if (bGui_Player) circleBeat.update();
 	bpmTapTempo.update();
 
 	//if (bBeatPlay)
@@ -210,9 +197,8 @@ void SurfingPlayer::draw() {
 
 	//--
 
-	if (bopen)
-
 #ifdef USE__OFX_SURFING_IM_GUI
+	if (bopen)
 	{
 		// Sub label
 		if (nameSubPanel != "-1")
@@ -231,6 +217,29 @@ void SurfingPlayer::draw() {
 
 		ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 3.0f * _h, "PLAYING", "PLAY", true, 1 - getPlayerPct());
 
+		guiManager.Add(durationTime, OFX_IM_SLIDER);
+		//IMGUI_SUGAR__SLIDER_ADD_MOUSE_WHEEL(durationTime);
+
+		if (!bMinimize_Player) {
+			guiManager.Add(durationBpm, OFX_IM_SLIDER);
+			//IMGUI_SUGAR__SLIDER_ADD_MOUSE_WHEEL(durationBpm);
+		}
+
+		if (!bMinimize_Player)
+		{
+			if (ImGui::Button("Half", ImVec2(_w2, _h))) { durationBpm /= 2.f; }
+			ImGui::SameLine();
+			if (ImGui::Button("Double", ImVec2(_w2, _h))) { durationBpm *= 2.f; }
+			if (ImGui::Button("Reset", ImVec2(_w1, _h))) { durationBpm = 120; }
+		}
+
+		// Tap
+		//guiManager.Add(bpmTapTempo.bpm, OFX_IM_STEPPER);
+		if (ImGui::Button("TAP", ImVec2(_w1, 2 * _h))) {
+			bpmTapTempo.bang();
+		}
+
+		// Bang
 		if (!bPlay || !bMinimize_Player) {
 			guiManager.Add(bPlayerBeatBang, OFX_IM_BUTTON_BIG);
 		}
@@ -240,30 +249,7 @@ void SurfingPlayer::draw() {
 			ofxImGuiSurfing::AddCombo(typeTrig, typesTrigNames);
 		}
 
-		//guiManager.Add(index, OFX_IM_DRAG);//not used
-
-		if (!bMinimize_Player) {
-			guiManager.Add(playerDurationBpm, OFX_IM_SLIDER);
-			IMGUI_SUGAR__SLIDER_ADD_MOUSE_WHEEL(playerDurationBpm, 5);
-		}
-
-		guiManager.Add(playerDuration, OFX_IM_SLIDER);
-		ofxImGuiSurfing::AddMouseWheel(playerDurationBpm, 1);
-
-		if (!bMinimize_Player) {
-			if (ImGui::Button("Half", ImVec2(_w2, _h))) { playerDurationBpm /= 2.f; }
-			ImGui::SameLine();
-			if (ImGui::Button("Double", ImVec2(_w2, _h))) { playerDurationBpm *= 2.f; }
-			if (ImGui::Button("Reset", ImVec2(_w1, _h))) { playerDurationBpm = 120; }
-		}
-
-		// Tap
-		//guiManager.Add(bpmTapTempo.bpm, OFX_IM_STEPPER);
-		if (ImGui::Button("TAP", ImVec2(_w1, 2 * _h))) {
-			bpmTapTempo.bang();
-		}
-
-		//if (!bMinimize_Player) guiManager.Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
+		// Progress
 		guiManager.Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
 	}
 #endif
@@ -320,28 +306,53 @@ void SurfingPlayer::Changed_Params_Player(ofAbstractParameter &e)
 		}
 	}
 
-	// Durations
-	else if (name == playerDuration.getName())
+	// Tap
+	else if (name == bTap.getName())
 	{
-		playerDurationBpm = (MAX_DURATION_RATIO * 60000.f) / playerDuration;
-
-		ofLogNotice(__FUNCTION__) << playerDuration << " : " << playerDurationBpm << "bpm";
+		if (bTap) {
+			bTap = false;
+			bpmTapTempo.bang();
+		}
 	}
-	else if (name == playerDurationBpm.getName())
+
+	// Durations
+	else if (name == durationTime.getName()) // ms
+	{
+		durationBpm = (playerDurationRatio * 60000.f) / durationTime;
+
+		ofLogNotice(__FUNCTION__) << " " << durationTime << " : " << durationBpm << "bpm";
+	}
+
+	else if (name == durationBpm.getName())
 	{
 		// 60,000 ms (1 minute) / Tempo (BPM) = Delay Time in ms for quarter-note beats
-		playerDuration = (MAX_DURATION_RATIO * 60000.f) / playerDurationBpm;
+		durationTime = (playerDurationRatio * 60000.f) / durationBpm;
 
-		if(bpmTapTempo.bpm != playerDurationBpm) bpmTapTempo.bpm = playerDurationBpm;
+		if (bpmTapTempo.bpm != durationBpm) bpmTapTempo.bpm = durationBpm;
 
-		ofLogNotice(__FUNCTION__) << playerDuration << " : " << playerDurationBpm << "bpm";
+		ofLogNotice(__FUNCTION__) << " " << durationTime << " : " << durationBpm << "bpm";
 	}
 
-	// A. Index selector
-	else if (name == index.getName())
+	/*
+	else if (name == playerDurationRatio.getName())
 	{
-		ofLogVerbose(__FUNCTION__) << "index: " << index.get();
+		durationBpm = (playerDurationRatio * 60000.f) / durationTime;
+
+		// 60,000 ms (1 minute) / Tempo (BPM) = Delay Time in ms for quarter-note beats
+		//durationTime = (playerDurationRatio * 60000.f) / durationBpm;
+
+		if (bpmTapTempo.bpm != durationBpm) bpmTapTempo.bpm = durationBpm;
+		//ofLogNotice(__FUNCTION__) << " " << durationTime << " : " << durationBpm << "bpm";
+
+		//ofLogNotice(__FUNCTION__) << " Ratio : " << playerDurationRatio << " : " << durationBpm << "bpm";
 	}
+	*/
+
+	//// A. Index selector
+	//else if (name == index.getName())
+	//{
+	//	ofLogVerbose(__FUNCTION__) << "index: " << index.get();
+	//}
 
 	// B. Beat
 	else if (name == bPlayerBeatBang.getName() && bPlayerBeatBang)
@@ -359,10 +370,10 @@ void SurfingPlayer::Changed_TapBpm() {
 	//return;
 
 	ofLogNotice(__FUNCTION__) << bpmTapTempo.bpm;
-	playerDurationBpm = bpmTapTempo.bpm;
+	durationBpm = bpmTapTempo.bpm;
 
 	//setBpm(bpmTapTempo.bpm);
-	
+
 	////doPlayRandomizer();
 }
 
