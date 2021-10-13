@@ -244,8 +244,10 @@ void SurfingPlayer::draw() {
 		}
 
 		// Type target selector
-		if (!bMinimize_Player) {
-			ofxImGuiSurfing::AddCombo(typeTrig, typesTrigNames);
+		if (typesTrigNames.size() > 0) { // bypass if not setted
+			if (!bMinimize_Player) {
+				ofxImGuiSurfing::AddCombo(typeTrig, typesTrigNames);
+			}
 		}
 
 		// Progress
