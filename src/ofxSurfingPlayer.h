@@ -7,7 +7,7 @@
 TODO:
 
 + get ImGui circle widget from ofxBeatClock
-	+ drag widget beat circle ?
++ drag widget beat circle ?
 + use internal timer from tap widget ?
 + key commands. key toggle enabler
 
@@ -16,11 +16,11 @@ TODO:
 
 //----
 
-// -> Comment these two lines to completely disable the ImGui helpers!
+// -> Comment these two lines to completely disable the ImGui helpers and to use ofxGui!
+// -> Uncomment to use ImGui through ofxSurfingImGui
 
-//#define USE__OFX_SURFING_IM_GUI // -> Optional. Uncomment to use inside an add-on with ImGui add-on.
-//#define USE__OFX_IM_GUI_INSTANTIATED // -> Optional. Comment to just draw the widgets only. 
-//// ImGui context will be instantiated outsite.
+#define USE__OFX_SURFING_IM_GUI // -> Optional. Uncomment to use inside an add-on with ImGui add-on.
+#define USE__OFX_IM_GUI_INSTANTIATED // -> Optional. Comment to just draw the widgets only. ImGui context will be instantiated outsite.
 
 //----
 
