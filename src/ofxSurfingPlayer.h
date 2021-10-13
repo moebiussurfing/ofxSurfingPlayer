@@ -6,21 +6,21 @@
 
 TODO:
 
-+ get dropdown target from surfingPresets
 + get ImGui circle widget from ofxBeatClock
 	+ drag widget beat circle ?
 + use internal timer from tap widget ?
-+ key commands
-	+ key toggle enabler
++ key commands. key toggle enabler
 
 */
 
 
 //----
 
-#define USE__OFX_SURFING_IM_GUI // -> Optional. Uncomment to use inside an add-on with ImGui add-on.
-#define USE__OFX_IM_GUI_INSTANTIATED // -> Optional. Comment to just draw the widgets only. 
-// ImGui context will be instantiated outsite.
+// -> Comment these two lines to completely disable the ImGui helpers!
+
+//#define USE__OFX_SURFING_IM_GUI // -> Optional. Uncomment to use inside an add-on with ImGui add-on.
+//#define USE__OFX_IM_GUI_INSTANTIATED // -> Optional. Comment to just draw the widgets only. 
+//// ImGui context will be instantiated outsite.
 
 //----
 

@@ -5,20 +5,14 @@ void ofApp::setup() {
 
 	// Player
 	//--------------------------------------------------------------
-	listener_Beat = surfingPlayer.bPlayerBeat.newListener([this](bool &b) {
+	listener_Beat = surfingPlayer.bPlayerBeatBang.newListener([this](bool &b) {
 		ofLogNotice("BEAT: ") << (b ? "TRUE" : "FALSE");
 
 		// Do something
 		a = 1.f;
-
 	});
 
 	gui.setup(surfingPlayer.params_Player);
-}
-
-//--------------------------------------------------------------
-void ofApp::update() {
-
 }
 
 //--------------------------------------------------------------
@@ -26,8 +20,7 @@ void ofApp::draw() {
 
 	a -= 0.1;
 	a = ofClamp(a, 0, 1);
-	ofColor c{ a * 255 };
-	ofClear(c);
+	ofClear(a * 255);
 
 	gui.draw();
 }
@@ -35,54 +28,4 @@ void ofApp::draw() {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
 	if (key == OF_KEY_RETURN) { surfingPlayer.setPlayToggle(); }
-}
-
-//--------------------------------------------------------------
-void ofApp::keyReleased(int key) {
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y) {
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button) {
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button) {
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button) {
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y) {
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y) {
-
-}
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h) {
-
-}
-
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg) {
-
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo) {
-
 }

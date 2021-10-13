@@ -62,9 +62,7 @@ void SurfingPlayer::setup() {
 	params_Player.add(durationTime);
 	params_Player.add(playerProgress);
 	params_Player.add(bPlayerBeatBang);
-	params_Player.add(bTap);
 	//params_Player.add(playerDurationRatio);
-	//params_Player.add(index);
 
 	//-
 
@@ -75,21 +73,22 @@ void SurfingPlayer::setup() {
 	params_AppSettings.add(bPlayerBeatBang);
 	params_AppSettings.add(durationBpm);
 	params_AppSettings.add(durationTime);
+
+#ifdef USE__OFX_SURFING_IM_GUI
 	params_AppSettings.add(bMinimize_Player);
+#endif
 
 	// Exclude
 	bPlay.setSerializable(false);
 	bTap.setSerializable(false);
 	playerProgress.setSerializable(false);
 	bPlayerBeatBang.setSerializable(false);
-	//index.setSerializable(false);
 
 	ofAddListener(params_Player.parameterChangedE(), this, &SurfingPlayer::Changed_Params_Player);
 
 	//--
 
-	// Gui
-
+	// ImGui
 #ifdef USE__OFX_IM_GUI_INSTANTIATED 
 	guiManager.setup(ofxImGuiSurfing::IM_GUI_MODE_INSTANTIATED);
 #else
