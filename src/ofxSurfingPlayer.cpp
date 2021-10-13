@@ -61,7 +61,7 @@ void SurfingPlayer::setup() {
 	bPlay.set("Play", false);
 	playerDurationBpm.set("Bpm", 120, 10, 400);
 	playerDuration.set("ms", 0, 0, 5000);
-	bPlayerBeat.set("Beat", false); // -> We defined beat to call "load next" palette
+	bPlayerBeatBang.set("Beat", false); // -> We defined beat to call "load next" palette
 	bMinimize_Player.set("Minimize", false);
 
 	// Gui
@@ -71,7 +71,7 @@ void SurfingPlayer::setup() {
 	params_Player.add(playerDuration);
 	params_Player.add(index);
 	params_Player.add(playerProgress);
-	params_Player.add(bPlayerBeat);
+	params_Player.add(bPlayerBeatBang);
 	//params_Player.add(bpmTapTempo.params);
 	//params_Player.add(bpmTapTempo.bpm);//simple clock
 
@@ -81,7 +81,7 @@ void SurfingPlayer::setup() {
 	params_AppSettings.setName("SurfingPlayer");
 	params_AppSettings.add(bGui_Player);
 	params_AppSettings.add(bPlay);
-	params_AppSettings.add(bPlayerBeat);
+	params_AppSettings.add(bPlayerBeatBang);
 	params_AppSettings.add(playerDurationBpm);
 	params_AppSettings.add(playerDuration);
 	params_AppSettings.add(index);
@@ -93,7 +93,7 @@ void SurfingPlayer::setup() {
 	bPlay.setSerializable(false);
 	playerProgress.setSerializable(false);
 	index.setSerializable(false);
-	bPlayerBeat.setSerializable(false);
+	bPlayerBeatBang.setSerializable(false);
 
 	ofAddListener(params_Player.parameterChangedE(), this, &SurfingPlayer::Changed_Params_Player);
 
@@ -136,7 +136,7 @@ void SurfingPlayer::update(ofEventArgs & args) {
 			index = ofRandom(index.getMin(), index.getMax() + 1);
 
 			// Beat
-			bPlayerBeat = true;
+			bPlayerBeatBang = true;
 		}
 	}
 	else
@@ -232,7 +232,12 @@ void SurfingPlayer::draw() {
 		ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 3.0f * _h, "PLAYING", "PLAY", true, 1 - getPlayerPct());
 
 		if (!bPlay || !bMinimize_Player) {
-			guiManager.Add(bPlayerBeat, OFX_IM_BUTTON_BIG);
+			guiManager.Add(bPlayerBeatBang, OFX_IM_BUTTON_BIG);
+		}
+
+		// Type target selector
+		if (!bMinimize_Player) {
+			ofxImGuiSurfing::AddCombo(typeTrig, typesTrigNames);
 		}
 
 		//guiManager.Add(index, OFX_IM_DRAG);//not used
@@ -335,16 +340,14 @@ void SurfingPlayer::Changed_Params_Player(ofAbstractParameter &e)
 	// A. Index selector
 	else if (name == index.getName())
 	{
-		ofLogVerbose(__FUNCTION__) << "rIndex: " << index.get();
+		ofLogVerbose(__FUNCTION__) << "index: " << index.get();
 	}
 
 	// B. Beat
-	else if (name == bPlayerBeat.getName() && bPlayerBeat)
+	else if (name == bPlayerBeatBang.getName() && bPlayerBeatBang)
 	{
-		bPlayerBeat = false;
+		bPlayerBeatBang = false;
 		ofLogVerbose(__FUNCTION__) << "Beat";
-
-		//colorClient.nextPreset();
 
 		circleBeat.bang();
 	}

@@ -48,7 +48,7 @@ TODO:
 	// Setup()
 	params_AppSettings.add(surfingPlayer.params_AppSettings);
 	//--------------------------------------------------------------
-	listener_Beat = surfingPlayer.bPlayerBeat.newListener([this](bool &b) {
+	listener_Beat = surfingPlayer.bPlayerBeatBang.newListener([this](bool &b) {
 		ofLogNotice("BEAT: ") << (b ? "TRUE" : "FALSE");
 
 		if (surfingPlayer.bPlay)
@@ -122,7 +122,7 @@ public:
 	ofxSurfing_ImGui_Manager guiManager;
 #endif
 
-	string path_Params_AppSettings = "SurfingPlayer_AppSettings.xml";
+	std::string path_Params_AppSettings = "SurfingPlayer_AppSettings.xml";
 	ofParameterGroup params_AppSettings;
 	ofParameter<bool> bKeys;
 
@@ -132,12 +132,15 @@ public:
 public:
 	ofParameter<bool> bGui_Player{ "Player", true };
 	ofParameterGroup params_Player{ "Player" };
-	ofParameter<bool> bPlayerBeat; // Trig beat
+	ofParameter<bool> bPlayerBeatBang; // Trig beat
 	ofParameter<bool> bPlay; // Play
 
 private:
 	void Changed_Params_Player(ofAbstractParameter &e);
 
+public:
+	ofParameter<int> targetType{ "type", 0, 0, 0 };
+	
 private:
 	ofParameter<bool> bMinimize_Player;
 	ofParameter<float> playerDurationBpm; // Bpm
@@ -171,19 +174,41 @@ public:
 	//-
 
 	// Custom label for ImGui panels
+
 private:
-	string namePanel = "-1";
-	string nameSubPanel = "-1";
+	std::string namePanel = "-1";
+	std::string nameSubPanel = "-1";
+
 public:
 	//--------------------------------------------------------------
-	void setNamePanel(string name) {
+	void setNamePanel(std::string name) {
 		namePanel = name;
 		bGui_Player.setName(namePanel);
-		//bGui_Player.setName("Player " + namePanel);
 	}
 	//--------------------------------------------------------------
-	void setNameSubPanel(string name) {
+	void setNameSubPanel(std::string name) {
 		nameSubPanel = name;
 	}
+	
+	//-
+
+public:
+
+	//--------------------------------------------------------------
+	void setTrigTypesNames(std::vector<std::string> namesTrigs)
+	{
+		typesTrigNames.clear();
+		typesTrigNames = namesTrigs;
+
+		typeTrig.setMin(0);
+		typeTrig.setMax(typesTrigNames.size() - 1);
+	}
+
+private:
+	std::vector<std::string> typesTrigNames;
+	
+
+public:
+	ofParameter<int> typeTrig{ "typeTrig", 0, 0, 0 };
 };
 

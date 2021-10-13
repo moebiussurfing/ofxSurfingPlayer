@@ -2,15 +2,16 @@
 **ofxSurfingPlayer** is a simple add-on for openFrameworks with a basic Bpm based timer with callbacks.
 
 ## Screenshot
-![Screenshot](Capture.PNG?raw=true "ofxGui")  
+![Screenshot](Capture1.PNG?raw=true "ofxGui")  
 
-![Screenshot](Capture_ImGui.PNG?raw=true "ImGui")  
+![Screenshot](Capture2.PNG?raw=true "ImGui")  
 
 ## Features
 - ofParameter based. 
 - ofxGui or ImGui modes.  
 - Tap Tempo Engine  
 - Tick Sounds
+- Selector to redirect the Bang to many targets.
 
 ## Usage
 - Look the examples.
