@@ -1,5 +1,6 @@
 ofxGui
 ofxImGui
+ofxScaleDragRect
 ofxSurfingHelpers
 ofxSurfingImGui
 ofxSurfingPlayer
