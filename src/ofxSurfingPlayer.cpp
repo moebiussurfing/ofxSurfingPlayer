@@ -38,13 +38,15 @@ void SurfingPlayer::setup() {
 
 	// Beat
 	// Circle Layout
-	int w = ofGetWidth();
-	int h = ofGetHeight();
-	float _cell = 60;
-	float _pad = 10;
-	float _size = _cell * 0.5f;
-	circleBeat.setRadius(_size);
-	circleBeat.setPosition(glm::vec2(w / 2.f, h - (_size + 10)));
+	{
+		int w = ofGetWidth();
+		int h = ofGetHeight();
+		float _cell = 60;
+		float _pad = 10;
+		float _size = _cell * 0.5f;
+		circleBeat.setRadius(_size);
+		circleBeat.setPosition(glm::vec2(w / 2.f, h - (_size + 10)));
+	}
 
 	//----	
 
@@ -159,6 +161,26 @@ void SurfingPlayer::update(ofEventArgs & args) {
 	//}
 
 	//if (bPlayerBeatBang) bPlayerBeatBang = false;
+
+	//--
+
+	// Beat
+	// Circle Layout
+	{
+		static int _w;
+		static int _h;
+		int w = ofGetWidth();
+		int h = ofGetHeight();
+		if (w != _w || h != _h)
+		{
+			float _cell = 60;
+			float _pad = 10;
+			float _size = _cell * 0.5f;
+			float _gap = 60;
+			circleBeat.setRadius(_size);
+			circleBeat.setPosition(glm::vec2(w / 2.f - _cell / 2.f, h - (_size + _gap)));
+		}
+	}
 }
 
 //--------------------------------------------------------------
@@ -230,14 +252,14 @@ void SurfingPlayer::draw() {
 		// Tap
 		//guiManager.Add(bpmTapTempo.bpm, OFX_IM_STEPPER);
 		//if (ImGui::Button("TAP", ImVec2(_w1, 2 * _h * _r))) 
-		if (guiManager.Add(bTap, bMinimize_Player? OFX_IM_BUTTON_SMALL:OFX_IM_BUTTON_BIG))
+		if (guiManager.Add(bTap, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG))
 		{
 			bpmTapTempo.bang();
 		}
 
 		// Beat Bang
 		if (!bPlay || !bMinimize_Player) {
-			guiManager.Add(bPlayerBeatBang, bMinimize_Player? OFX_IM_BUTTON_SMALL:OFX_IM_BUTTON_BIG);
+			guiManager.Add(bPlayerBeatBang, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG);
 		}
 
 		// Type target selector
