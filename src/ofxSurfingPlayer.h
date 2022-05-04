@@ -68,10 +68,16 @@ public:
 
 	ofParameterGroup params_Player{ "Player" };
 
-	ofParameter<bool> bGui_Player{ "Player", true };
+	ofParameter<bool> bGui{ "Player", true };
 	ofParameter<bool> bPlayerBeatBang; // Trig beat
 	ofParameter<bool> bPlay; // Play
 	ofParameter<bool> bTap; // Tap
+
+	//--------------------------------------------------------------
+	void setName(string name) {
+		bGui.setName("Player " + name);
+		//bGui.setName(bGui.getName() + " " + name);
+	}
 
 private:
 
@@ -130,7 +136,7 @@ public:
 	//--------------------------------------------------------------
 	void setNamePanel(std::string name) {
 		namePanel = name;
-		bGui_Player.setName(namePanel);
+		bGui.setName(namePanel);
 	}
 	//--------------------------------------------------------------
 	void setNameSubPanel(std::string name) {

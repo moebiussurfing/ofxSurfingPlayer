@@ -72,7 +72,7 @@ void SurfingPlayer::setup() {
 
 	// App Settings
 	params_AppSettings.setName("SurfingPlayer");
-	params_AppSettings.add(bGui_Player);
+	params_AppSettings.add(bGui);
 	params_AppSettings.add(bPlay);
 	params_AppSettings.add(bPlayerBeatBang);
 	params_AppSettings.add(durationBpm);
@@ -140,7 +140,7 @@ void SurfingPlayer::update(ofEventArgs & args) {
 
 	// Player beat
 
-	if (bGui_Player) circleBeat.update();
+	if (bGui) circleBeat.update();
 	bpmTapTempo.update();
 
 	//if (bBeatPlay)
@@ -186,7 +186,7 @@ void SurfingPlayer::update(ofEventArgs & args) {
 //--------------------------------------------------------------
 void SurfingPlayer::draw() {
 
-	if (!bGui_Player) return;
+	if (!bGui) return;
 
 	//--
 
@@ -206,14 +206,14 @@ void SurfingPlayer::draw() {
 
 	//IMGUI_SUGAR__WINDOWS_CONSTRAINTS;
 
-	bool bopen = (guiManager.beginWindow(bGui_Player, flagw));
+	bool bOpen = (guiManager.beginWindow(bGui, flagw));
 
 #endif
 
 	//--
 
 #ifdef USE__OFX_SURFING_IM_GUI
-	if (bopen)
+	if (bOpen)
 	{
 		// Sub label
 		if (nameSubPanel != "-1")
@@ -277,7 +277,7 @@ void SurfingPlayer::draw() {
 	//--
 
 #ifdef USE__OFX_IM_GUI_INSTANTIATED 
-	if (bopen) {
+	if (bOpen) {
 		guiManager.endWindow();
 	}
 
