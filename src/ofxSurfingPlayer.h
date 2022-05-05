@@ -68,14 +68,15 @@ public:
 
 	ofParameterGroup params_Player{ "Player" };
 
-	ofParameter<bool> bGui{ "Player", true };
+	ofParameter<bool> bGui{ "PLAYER", true };
 	ofParameter<bool> bPlayerBeatBang; // Trig beat
 	ofParameter<bool> bPlay; // Play
 	ofParameter<bool> bTap; // Tap
 
 	//--------------------------------------------------------------
 	void setName(string name) {
-		bGui.setName("Player " + name);
+		bGui.setName(name + " PLAYER");
+		//bGui.setName("Player " + name);
 		//bGui.setName(bGui.getName() + " " + name);
 	}
 
@@ -86,13 +87,13 @@ private:
 public:
 
 	ofParameter<int> targetType{ "type", 0, 0, 0 };
-	
+
 	// Bpm/ms. Beat Duration
 	ofParameter<float> durationBpm; // Bpm
 	ofParameter<int> durationTime; // ms
 
-private:
 	ofParameter<bool> bMinimize_Player;
+private:
 	ofParameter<float> playerProgress{ "%", 0, 0, 1 };
 	//ofParameter<int> index{ "index", 0, 0, 8 }; // trig randomize index
 
@@ -142,7 +143,7 @@ public:
 	void setNameSubPanel(std::string name) {
 		nameSubPanel = name;
 	}
-	
+
 	//-
 
 public:
@@ -160,7 +161,7 @@ public:
 private:
 
 	std::vector<std::string> typesTrigNames;
-	
+
 
 public:
 

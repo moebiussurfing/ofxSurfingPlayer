@@ -56,7 +56,7 @@ void SurfingPlayer::setup() {
 	durationTime.set("ms", 0, 0, 400 * 8);
 	//durationTime.set("ms", 0, 0, 5000);
 	bPlayerBeatBang.set("Beat", false); // -> We defined beat to call "load next" palette
-	bMinimize_Player.set("Minimize", false);
+	bMinimize_Player.set("Minimize", true);
 
 	// Gui
 	params_Player.setName("SurfingPlayer");
@@ -215,12 +215,12 @@ void SurfingPlayer::draw() {
 #ifdef USE__OFX_SURFING_IM_GUI
 	if (bOpen)
 	{
-		// Sub label
-		if (nameSubPanel != "-1")
-		{
-			ImGui::Text(nameSubPanel.c_str());
-			ImGui::Spacing();
-		}
+		//// Sub label
+		//if (nameSubPanel != "-1")
+		//{
+		//	ImGui::Text(nameSubPanel.c_str());
+		//	ImGui::Spacing();
+		//}
 
 		//-
 
