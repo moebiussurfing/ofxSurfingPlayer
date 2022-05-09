@@ -21,7 +21,7 @@ void SurfingPlayer::setup() {
 
 	//--
 
-	// Tap Tempo Eengine
+	// Tap Tempo Engine
 	{
 		bpmTapTempo.setup();
 
@@ -36,17 +36,17 @@ void SurfingPlayer::setup() {
 		circleBeat.setSpeed(0.5);
 	}
 
-	// Beat
-	// Circle Layout
-	{
-		int w = ofGetWidth();
-		int h = ofGetHeight();
-		float _cell = 60;
-		float _pad = 10;
-		float _size = _cell * 0.5f;
-		circleBeat.setRadius(_size);
-		circleBeat.setPosition(glm::vec2(w / 2.f, h - (_size + 10)));
-	}
+	//// Beat
+	//// Circle Layout
+	//{
+	//	int w = ofGetWidth();
+	//	int h = ofGetHeight();
+	//	float _cell = 60;
+	//	float _pad = 10;
+	//	float _size = _cell * 0.5f;
+	//	circleBeat.setRadius(_size);
+	//	circleBeat.setPosition(glm::vec2(w / 2.f, h - (_size + 10)));
+	//}
 
 	//----	
 
@@ -68,11 +68,12 @@ void SurfingPlayer::setup() {
 	params_Player.add(bPlayerBeatBang);
 	//params_Player.add(playerDurationRatio);
 
-	//-
+	//--
 
 	// App Settings
 	params_AppSettings.setName("SurfingPlayer");
 	params_AppSettings.add(bGui);
+	params_AppSettings.add(bGui_WidgetBeat);
 	params_AppSettings.add(bPlay);
 	params_AppSettings.add(bPlayerBeatBang);
 	params_AppSettings.add(durationBpm);
@@ -100,6 +101,10 @@ void SurfingPlayer::setup() {
 	guiManager.setup(ofxImGuiSurfing::IM_GUI_MODE_NOT_INSTANTIATED); // -> windows will be handle externally
 #endif
 #endif
+
+	//--
+
+	//bGui.setName("PLAYER");
 
 	//--
 
@@ -190,7 +195,7 @@ void SurfingPlayer::draw() {
 
 	//--
 
-	circleBeat.draw();
+	if(bGui_WidgetBeat)circleBeat.draw();
 
 	//--
 
@@ -216,9 +221,9 @@ void SurfingPlayer::draw() {
 	if (bOpen)
 	{
 		//// Sub label
-		//if (nameSubPanel != "-1")
+		//if (name_SubPanel != "-1")
 		//{
-		//	ImGui::Text(nameSubPanel.c_str());
+		//	ImGui::Text(name_SubPanel.c_str());
 		//	ImGui::Spacing();
 		//}
 
@@ -229,14 +234,15 @@ void SurfingPlayer::draw() {
 		float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
 		float _r = bMinimize_Player ? 0.5 : 1.0;
 
-		if (guiManager.Add(bMinimize_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL)) {}
+		if (guiManager.Add(bMinimize_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM)) {}
 
 		ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 3.0f * _h * _r, "PLAYING", "PLAY", true, 1 - getPlayerPct());
 
 		guiManager.Add(durationTime, OFX_IM_SLIDER);
 		//IMGUI_SUGAR__SLIDER_ADD_MOUSE_WHEEL(durationTime);
 
-		if (!bMinimize_Player) {
+		if (!bMinimize_Player)
+		{
 			guiManager.Add(durationBpm, OFX_IM_SLIDER);
 			//IMGUI_SUGAR__SLIDER_ADD_MOUSE_WHEEL(durationBpm);
 		}
@@ -271,6 +277,9 @@ void SurfingPlayer::draw() {
 
 		// Progress
 		guiManager.Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
+
+		// Beat Circle
+		if (!bMinimize_Player) guiManager.Add(bGui_WidgetBeat, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 	}
 #endif
 

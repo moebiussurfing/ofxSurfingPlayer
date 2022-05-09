@@ -73,8 +73,11 @@ public:
 	ofParameter<bool> bPlay; // Play
 	ofParameter<bool> bTap; // Tap
 
+	ofParameter<bool> bGui_WidgetBeat{ "Beat Widget", true };
+
 	//--------------------------------------------------------------
-	void setName(string name) {
+	void setName(string name) 
+	{
 		bGui.setName(name + " PLAYER");
 		//bGui.setName("Player " + name);
 		//bGui.setName(bGui.getName() + " " + name);
@@ -129,19 +132,20 @@ public:
 
 private:
 
-	std::string namePanel = "-1";
-	std::string nameSubPanel = "-1";
+	std::string name_Panel = "-1";
+	std::string name_SubPanel = "-1";
 
 public:
 
 	//--------------------------------------------------------------
 	void setNamePanel(std::string name) {
-		namePanel = name;
-		bGui.setName(namePanel);
+		name_Panel = name;
+		bGui.setName(name_Panel);
 	}
+
 	//--------------------------------------------------------------
 	void setNameSubPanel(std::string name) {
-		nameSubPanel = name;
+		name_SubPanel = name;
 	}
 
 	//-
