@@ -96,7 +96,9 @@ public:
 	ofParameter<int> durationTime; // ms
 
 	ofParameter<bool> bMinimize_Player;
+
 private:
+
 	ofParameter<float> playerProgress{ "%", 0, 0, 1 };
 	//ofParameter<int> index{ "index", 0, 0, 8 }; // trig randomize index
 

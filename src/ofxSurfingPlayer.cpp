@@ -241,7 +241,7 @@ void SurfingPlayer::draw() {
 		guiManager.Add(durationTime, OFX_IM_SLIDER);
 		//IMGUI_SUGAR__SLIDER_ADD_MOUSE_WHEEL(durationTime);
 
-		if (!bMinimize_Player)
+		//if (!bMinimize_Player)
 		{
 			guiManager.Add(durationBpm, OFX_IM_SLIDER);
 			//IMGUI_SUGAR__SLIDER_ADD_MOUSE_WHEEL(durationBpm);
