@@ -73,6 +73,9 @@ public:
 	ofParameter<bool> bPlay; // Play
 	ofParameter<bool> bTap; // Tap
 
+	ofParameter<bool> bNaturizer; // Naturalizer
+	ofParameter<int> naturizerPower; // Naturalizer
+
 	ofParameter<bool> bGui_WidgetBeat{ "Beat Widget", true };
 
 	//--------------------------------------------------------------
@@ -94,6 +97,7 @@ public:
 	// Bpm/ms. Beat Duration
 	ofParameter<float> durationBpm; // Bpm
 	ofParameter<int> durationTime; // ms
+	ofParameter<int> durationTimeNaturalized; // ms
 
 	ofParameter<bool> bMinimize_Player;
 

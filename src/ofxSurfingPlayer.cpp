@@ -58,12 +58,17 @@ void SurfingPlayer::setup() {
 	bPlayerBeatBang.set("Beat", false); // -> We defined beat to call "load next" palette
 	bMinimize_Player.set("Minimize", true);
 
+	bNaturizer.set("Naturizer", false);
+	naturizerPower.set("PowerDiv", 2, 2, 4);
+
 	// Gui
 	params_Player.setName("SurfingPlayer");
 	params_Player.add(bPlay);
 	params_Player.add(bTap);
 	params_Player.add(durationBpm);
 	params_Player.add(durationTime);
+	params_Player.add(bNaturizer);
+	params_Player.add(naturizerPower);
 	params_Player.add(playerProgress);
 	params_Player.add(bPlayerBeatBang);
 	//params_Player.add(playerDurationRatio);
@@ -78,6 +83,8 @@ void SurfingPlayer::setup() {
 	params_AppSettings.add(bPlayerBeatBang);
 	params_AppSettings.add(durationBpm);
 	params_AppSettings.add(durationTime);
+	params_AppSettings.add(bNaturizer);
+	params_AppSettings.add(naturizerPower);
 
 #ifdef USE__OFX_SURFING_IM_GUI
 	params_AppSettings.add(bMinimize_Player);
@@ -119,11 +126,15 @@ void SurfingPlayer::update(ofEventArgs & args) {
 
 	if (bPlay)
 	{
+		int d;
+		if (!bNaturizer) d = durationTime;
+		else d = durationTimeNaturalized;
+
 		uint64_t t = ofGetElapsedTimeMillis();
 		timePlayer = t - playerTimerStarted;
-		playerProgress = ofMap(timePlayer, 0, durationTime, 0, 1, true);
+		playerProgress = ofMap(timePlayer, 0, d, 0, 1, true);
 
-		if (timePlayer >= durationTime)
+		if (timePlayer >= d)
 		{
 			ofLogNotice(__FUNCTION__) << "Done : " << timePlayer;
 
@@ -132,8 +143,15 @@ void SurfingPlayer::update(ofEventArgs & args) {
 			// Beat
 			bPlayerBeatBang = true;
 
-			//// Randomize
-			//index = ofRandom(index.getMin(), index.getMax() + 1);
+			if (bNaturizer)
+			{
+				// Randomize
+				int r = (int)ofRandom(1, naturizerPower + 1);
+				//if (r = 3) r = 4;
+				//else if (r = 4) r = 8;
+				durationTimeNaturalized = durationTime / r;
+				//cout << "durationTimeNaturalized: " << durationTimeNaturalized << endl;
+			}
 		}
 	}
 	else
@@ -195,7 +213,7 @@ void SurfingPlayer::draw() {
 
 	//--
 
-	if(bGui_WidgetBeat)circleBeat.draw();
+	if (bGui_WidgetBeat)circleBeat.draw();
 
 	//--
 
@@ -234,17 +252,20 @@ void SurfingPlayer::draw() {
 		float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
 		float _r = bMinimize_Player ? 0.5 : 1.0;
 
-		if (guiManager.Add(bMinimize_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM)) {}
+		guiManager.Add(bMinimize_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 
 		ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 3.0f * _h * _r, "PLAYING", "PLAY", true, 1 - getPlayerPct());
 
+		ofxImGuiSurfing::AddSpacingSeparated();
+
 		guiManager.Add(durationTime, OFX_IM_SLIDER);
-		//IMGUI_SUGAR__SLIDER_ADD_MOUSE_WHEEL(durationTime);
 
 		//if (!bMinimize_Player)
 		{
 			guiManager.Add(durationBpm, OFX_IM_SLIDER);
-			//IMGUI_SUGAR__SLIDER_ADD_MOUSE_WHEEL(durationBpm);
+
+			guiManager.Add(bNaturizer, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+			if (!bMinimize_Player) if (bNaturizer)guiManager.Add(naturizerPower, OFX_IM_SLIDER);
 		}
 
 		if (!bMinimize_Player)
@@ -252,12 +273,19 @@ void SurfingPlayer::draw() {
 			if (ImGui::Button("Half", ImVec2(_w2, _h))) { durationBpm /= 2.f; }
 			ImGui::SameLine();
 			if (ImGui::Button("Double", ImVec2(_w2, _h))) { durationBpm *= 2.f; }
-			if (ImGui::Button("Reset", ImVec2(_w1, _h))) { durationBpm = 120; }
 		}
+
+		ofxImGuiSurfing::AddSpacing();
+
+		if (ImGui::Button("Reset", ImVec2(_w1, _h))) {
+			durationBpm = 120;
+			//durationTime = 1;
+		}
+
+		ofxImGuiSurfing::AddSpacingSeparated();
 
 		// Tap
 		//guiManager.Add(bpmTapTempo.bpm, OFX_IM_STEPPER);
-		//if (ImGui::Button("TAP", ImVec2(_w1, 2 * _h * _r))) 
 		if (guiManager.Add(bTap, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG))
 		{
 			bpmTapTempo.bang();
@@ -278,8 +306,14 @@ void SurfingPlayer::draw() {
 		// Progress
 		guiManager.Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
 
+		//--
+
 		// Beat Circle
-		if (!bMinimize_Player) guiManager.Add(bGui_WidgetBeat, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+		if (!bMinimize_Player) {
+			guiManager.Add(bGui_WidgetBeat, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+
+			ofxImGuiSurfing::AddSpacingSeparated();
+		}
 	}
 #endif
 
