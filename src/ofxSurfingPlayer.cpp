@@ -4,7 +4,7 @@
 SurfingPlayer::SurfingPlayer() {
 	ofAddListener(ofEvents().update, this, &SurfingPlayer::update);
 
-	setup();
+	//setup();
 }
 
 //--------------------------------------------------------------
@@ -18,6 +18,7 @@ SurfingPlayer::~SurfingPlayer() {
 
 //--------------------------------------------------------------
 void SurfingPlayer::setup() {
+	bSetupDone = true;
 
 	//--
 
@@ -59,7 +60,7 @@ void SurfingPlayer::setup() {
 	bMinimize_Player.set("Minimize", true);
 
 	bNaturizer.set("Naturizer", false);
-	naturizerPower.set("PowerDiv", 2, 2, 4);
+	naturizerPower.set("PowerDiv", 4, 2, 4);
 
 	// Gui
 	params_Player.setName("SurfingPlayer");
@@ -109,20 +110,21 @@ void SurfingPlayer::setup() {
 #endif
 #endif
 
-	//--
-
-	//bGui.setName("PLAYER");
-
-	//--
+	//----
 
 	// Startup
+
 	durationBpm = 120;
 
-	ofxSurfingHelpers::loadGroup(params_AppSettings);
+	if (name_Window == "-1") name_Window = "PLAYER";
+
+	ofxSurfingHelpers::loadGroup(params_AppSettings, path_GLOBAL + path_Params_AppSettings);
 }
 
 //--------------------------------------------------------------
-void SurfingPlayer::update(ofEventArgs & args) {
+void SurfingPlayer::update(ofEventArgs & args)
+{
+	if (!bSetupDone) setup();
 
 	if (bPlay)
 	{
@@ -213,119 +215,124 @@ void SurfingPlayer::draw() {
 
 	//--
 
-	if (bGui_WidgetBeat)circleBeat.draw();
+	if (bGui_WidgetBeat) circleBeat.draw();
 
 	//--
 
+	draw_ImGui();
+}
+
+//--------------------------------------------------------------
+void SurfingPlayer::draw_ImGui() {
+
 	// ImGui
+	bool bOpen = true;
 
 #ifdef USE__OFX_IM_GUI_INSTANTIATED 
 	guiManager.begin();
+	{
+		//-
+		
+		std::string n;
+		n = name_Window;
 
-	//-
-
-	ImGuiWindowFlags flagw = ImGuiWindowFlags_None;
-	if (guiManager.bAutoResize) flagw += ImGuiWindowFlags_AlwaysAutoResize;
-
-	//IMGUI_SUGAR__WINDOWS_CONSTRAINTS;
-
-	bool bOpen = (guiManager.beginWindow(bGui, flagw));
+		bOpen = (guiManager.beginWindow(n, bGui));
 
 #endif
-
-	//--
+		//--
 
 #ifdef USE__OFX_SURFING_IM_GUI
-	if (bOpen)
-	{
-		//// Sub label
-		//if (name_SubPanel != "-1")
-		//{
-		//	ImGui::Text(name_SubPanel.c_str());
-		//	ImGui::Spacing();
-		//}
-
-		//-
-
-		float _w1 = ofxImGuiSurfing::getWidgetsWidth(1);
-		float _w2 = ofxImGuiSurfing::getWidgetsWidth(2);
-		float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
-		float _r = bMinimize_Player ? 0.5 : 1.0;
-
-		guiManager.Add(bMinimize_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
-
-		ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 3.0f * _h * _r, "PLAYING", "PLAY", true, 1 - getPlayerPct());
-
-		ofxImGuiSurfing::AddSpacingSeparated();
-
-		guiManager.Add(durationTime, OFX_IM_SLIDER);
-
-		//if (!bMinimize_Player)
+		if (bOpen)
 		{
-			guiManager.Add(durationBpm, OFX_IM_SLIDER);
+			//// Sub label
+			//if (name_SubPanel != "-1")
+			//{
+			//	ImGui::Text(name_SubPanel.c_str());
+			//	ImGui::Spacing();
+			//}
 
-			guiManager.Add(bNaturizer, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
-			if (!bMinimize_Player) if (bNaturizer)guiManager.Add(naturizerPower, OFX_IM_SLIDER);
-		}
+			//-
 
-		if (!bMinimize_Player)
-		{
-			if (ImGui::Button("Half", ImVec2(_w2, _h))) { durationBpm /= 2.f; }
-			ImGui::SameLine();
-			if (ImGui::Button("Double", ImVec2(_w2, _h))) { durationBpm *= 2.f; }
-		}
+			float _w1 = ofxImGuiSurfing::getWidgetsWidth(1);
+			float _w2 = ofxImGuiSurfing::getWidgetsWidth(2);
+			float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
+			float _r = bMinimize_Player ? 0.5 : 1.0;
 
-		ofxImGuiSurfing::AddSpacing();
+			guiManager.Add(bMinimize_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 
-		if (ImGui::Button("Reset", ImVec2(_w1, _h))) {
-			durationBpm = 120;
-			//durationTime = 1;
-		}
+			ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 3.0f * _h * _r, "PLAYING", "PLAY", true, 1 - getPlayerPct());
 
-		ofxImGuiSurfing::AddSpacingSeparated();
+			ofxImGuiSurfing::AddSpacingSeparated();
 
-		// Tap
-		//guiManager.Add(bpmTapTempo.bpm, OFX_IM_STEPPER);
-		if (guiManager.Add(bTap, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG))
-		{
-			bpmTapTempo.bang();
-		}
+			guiManager.Add(durationTime, OFX_IM_SLIDER);
 
-		// Beat Bang
-		if (!bPlay || !bMinimize_Player) {
-			guiManager.Add(bPlayerBeatBang, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG);
-		}
+			//if (!bMinimize_Player)
+			{
+				guiManager.Add(durationBpm, OFX_IM_SLIDER);
 
-		// Type target selector
-		if (typesTrigNames.size() > 0) { // bypass if not setted
+				guiManager.Add(bNaturizer, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+				if (!bMinimize_Player) if (bNaturizer)guiManager.Add(naturizerPower, OFX_IM_SLIDER);
+			}
+
+			if (!bMinimize_Player)
+			{
+				if (ImGui::Button("Half", ImVec2(_w2, _h))) { durationBpm /= 2.f; }
+				ImGui::SameLine();
+				if (ImGui::Button("Double", ImVec2(_w2, _h))) { durationBpm *= 2.f; }
+			}
+
+			ofxImGuiSurfing::AddSpacing();
+
+			if (ImGui::Button("Reset", ImVec2(_w1, _h))) {
+				durationBpm = 120;
+				//durationTime = 1;
+			}
+
+			ofxImGuiSurfing::AddSpacingSeparated();
+
+			// Tap
+			//guiManager.Add(bpmTapTempo.bpm, OFX_IM_STEPPER);
+			if (guiManager.Add(bTap, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG))
+			{
+				bpmTapTempo.bang();
+			}
+
+			// Beat Bang
+			if (!bPlay || !bMinimize_Player) {
+				guiManager.Add(bPlayerBeatBang, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG);
+			}
+
+			// Type target selector
+			if (typesTrigNames.size() > 0) { // bypass if not setted
+				if (!bMinimize_Player) {
+					ofxImGuiSurfing::AddCombo(typeTrig, typesTrigNames);
+				}
+			}
+
+			// Progress
+			guiManager.Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
+
+			//--
+
+			// Beat Circle
 			if (!bMinimize_Player) {
-				ofxImGuiSurfing::AddCombo(typeTrig, typesTrigNames);
+				guiManager.Add(bGui_WidgetBeat, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+
+				ofxImGuiSurfing::AddSpacingSeparated();
 			}
 		}
-
-		// Progress
-		guiManager.Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
+#endif
 
 		//--
 
-		// Beat Circle
-		if (!bMinimize_Player) {
-			guiManager.Add(bGui_WidgetBeat, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
-
-			ofxImGuiSurfing::AddSpacingSeparated();
-		}
-	}
-#endif
-
-	//--
-
 #ifdef USE__OFX_IM_GUI_INSTANTIATED 
-	if (bOpen) {
-		guiManager.endWindow();
+		if (bOpen)
+		{
+			guiManager.endWindow();
+		}
+
+		//-
 	}
-
-	//-
-
 	guiManager.end();
 #endif
 }
@@ -443,6 +450,6 @@ void SurfingPlayer::Changed_TapBpm() {
 void SurfingPlayer::exit() {
 	ofLogNotice(__FUNCTION__);
 
-	ofxSurfingHelpers::saveGroup(params_AppSettings);
+	ofxSurfingHelpers::saveGroup(params_AppSettings, path_GLOBAL + path_Params_AppSettings);
 }
 

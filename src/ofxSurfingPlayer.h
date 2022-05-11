@@ -43,6 +43,7 @@ public:
 
 	void setup();
 	void draw();
+	void draw_ImGui();
 	void update(ofEventArgs & args);
 	void keyPressed(ofKeyEventArgs &eventArgs);
 	void exit();
@@ -53,8 +54,19 @@ private:
 	ofxSurfing_ImGui_Manager guiManager;
 #endif
 
-	std::string path_Params_AppSettings = "SurfingPlayer_AppSettings.xml";
-	ofParameter<bool> bKeys;
+	std::string path_GLOBAL = "ofxSurfing/";
+	std::string path_Params_AppSettings = "ofxSurfingPlayer_Settings.xml";
+
+	bool bSetupDone = false;
+
+public:
+
+	//--------------------------------------------------------------
+	void setPathGlobal(std::string path) {
+		path_GLOBAL = path;
+
+		setup();
+	}
 
 public:
 
@@ -73,18 +85,12 @@ public:
 	ofParameter<bool> bPlay; // Play
 	ofParameter<bool> bTap; // Tap
 
-	ofParameter<bool> bNaturizer; // Naturalizer
-	ofParameter<int> naturizerPower; // Naturalizer
+	ofParameter<bool> bNaturizer; // Each time the timers ends, randomizes the duration to a divided time.
+	ofParameter<int> naturizerPower; // It's the divider force. Bigger are big variation allowed.
 
 	ofParameter<bool> bGui_WidgetBeat{ "Beat Widget", true };
 
-	//--------------------------------------------------------------
-	void setName(string name) 
-	{
-		bGui.setName(name + " PLAYER");
-		//bGui.setName("Player " + name);
-		//bGui.setName(bGui.getName() + " " + name);
-	}
+	ofParameter<bool> bKeys;
 
 private:
 
@@ -138,21 +144,26 @@ public:
 
 private:
 
-	std::string name_Panel = "-1";
-	std::string name_SubPanel = "-1";
+	std::string name_Window = "-1";
+	//std::string name_SubPanel = "-1";
 
 public:
 
 	//--------------------------------------------------------------
-	void setNamePanel(std::string name) {
-		name_Panel = name;
-		bGui.setName(name_Panel);
+	void setNameGuiToggle(string name)
+	{
+		bGui.setName(name);
 	}
 
 	//--------------------------------------------------------------
-	void setNameSubPanel(std::string name) {
-		name_SubPanel = name;
+	void setNameWindow(std::string name) {
+		name_Window = name;
 	}
+
+	////--------------------------------------------------------------
+	//void setNameSubPanel(std::string name) {
+	//	name_SubPanel = name;
+	//}
 
 	//-
 
