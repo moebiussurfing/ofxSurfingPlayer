@@ -316,9 +316,9 @@ void SurfingPlayer::draw_ImGui() {
 
 			// Beat Circle
 			if (!bMinimize_Player) {
-				guiManager.Add(bGui_WidgetBeat, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
-
 				ofxImGuiSurfing::AddSpacingSeparated();
+
+				guiManager.Add(bGui_WidgetBeat, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 			}
 		}
 #endif
