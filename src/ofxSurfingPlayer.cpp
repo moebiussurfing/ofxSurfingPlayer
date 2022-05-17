@@ -232,7 +232,7 @@ void SurfingPlayer::draw_ImGui() {
 	guiManager.begin();
 	{
 		//-
-		
+
 		std::string n;
 		n = name_Window;
 
@@ -417,6 +417,19 @@ void SurfingPlayer::Changed_Params_Player(ofAbstractParameter &e)
 		//ofLogNotice(__FUNCTION__) << " Ratio : " << playerDurationRatio << " : " << durationBpm << "bpm";
 	}
 	*/
+
+	else if (name == bNaturizer.getName())
+	{
+		if (bNaturizer)
+		{
+			// Randomize
+			int r = (int)ofRandom(1, naturizerPower + 1);
+			//if (r = 3) r = 4;
+			//else if (r = 4) r = 8;
+			durationTimeNaturalized = durationTime / r;
+			//cout << "durationTimeNaturalized: " << durationTimeNaturalized << endl;
+		}
+	}
 
 	//-
 
