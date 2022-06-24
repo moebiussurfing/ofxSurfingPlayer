@@ -56,7 +56,17 @@ void SurfingPlayer::setup() {
 	durationBpm.set("BPM", 120, 10, 400);
 	durationTime.set("ms", 0, 0, 400 * 8);
 	//durationTime.set("ms", 0, 0, 5000);
-	bPlayerBeatBang.set("Beat", false); // -> We defined beat to call "load next" palette
+	
+	//--
+	 
+	// We can manually trig to simulate the timed trigger
+	// Example: on ofxSurfingPResets,
+	// We will define the trig/bang/beat 
+	// to call "load next", "load random" or "random params"
+	 
+	//bPlayerBeatBang.set("Beat", false); 
+	bPlayerBeatBang.set("Bang", false);
+
 	bMinimize_Player.set("Minimize", true);
 
 	bNaturizer.set("Naturizer", false);
@@ -186,8 +196,6 @@ void SurfingPlayer::update(ofEventArgs& args)
 	//	}
 	//}
 
-	//if (bPlayerBeatBang) bPlayerBeatBang = false;
-
 	//--
 
 	// Beat
@@ -230,7 +238,7 @@ void SurfingPlayer::draw_ImGui() {
 
 	bool bOpen = true;
 
-	//-
+	//--
 
 #ifdef USE__OFX_IM_GUI_INSTANTIATED 
 
@@ -239,14 +247,11 @@ void SurfingPlayer::draw_ImGui() {
 		std::string n;
 		n = name_Instance;
 
-		//bOpen = (guiManager.beginWindow(n, bGui));
-
 		bOpen = (guiManager.beginWindow(bGui));
 
 		guiManager.AddLabelBig("PLAYER \n\n" + n, false);
 
 #endif
-
 		//--
 
 #ifdef USE__OFX_SURFING_IM_GUI
@@ -264,18 +269,23 @@ void SurfingPlayer::draw_ImGui() {
 
 			ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 3.0f * _h * _r, "PLAYING", "PLAY", true, getPlayerProgress());
 
+			// Beat Bang Trig
+			if (!bMinimize_Player)
+				if (!bPlay || !bMinimize_Player) 
+				{
+					guiManager.Add(bPlayerBeatBang, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG);
+				}
+
 			guiManager.AddSpacingSeparated();
 
 			guiManager.Add(durationTime, OFX_IM_SLIDER);
 			guiManager.Add(durationBpm, OFX_IM_SLIDER);
 
-			if (!bMinimize_Player)
-			{
-				guiManager.AddSpacing();
-				if (ImGui::Button("Half", ImVec2(_w2, _h))) { durationBpm /= 2.f; }
-				ImGui::SameLine();
-				if (ImGui::Button("Double", ImVec2(_w2, _h))) { durationBpm *= 2.f; }
-			}
+			guiManager.AddSpacing();
+
+			if (ImGui::Button("Half", ImVec2(_w2, _h))) { durationBpm /= 2.f; }
+			ImGui::SameLine();
+			if (ImGui::Button("Double", ImVec2(_w2, _h))) { durationBpm *= 2.f; }
 
 			if (ImGui::Button("Reset", ImVec2(_w1, _h)))
 			{
@@ -285,7 +295,8 @@ void SurfingPlayer::draw_ImGui() {
 			if (!bMinimize_Player)
 			{
 				guiManager.AddSpacing();
-				guiManager.Add(bNaturizer, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+				guiManager.Add(bNaturizer);
+				//guiManager.Add(bNaturizer, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 				if (bNaturizer)guiManager.Add(naturizerPower, OFX_IM_SLIDER);
 			}
 
@@ -296,12 +307,6 @@ void SurfingPlayer::draw_ImGui() {
 			if (guiManager.Add(bTap, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG))
 			{
 				bpmTapTempo.bang();
-			}
-
-			// Beat Bang Trig
-			if (!bMinimize_Player)
-			if (!bPlay || !bMinimize_Player) {
-				guiManager.Add(bPlayerBeatBang, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG);
 			}
 
 			// Type target selector
