@@ -132,6 +132,10 @@ public:
 	float getPlayerPct() {
 		return playerProgress;
 	}
+	//--------------------------------------------------------------
+	float getPlayerProgress() {
+		return 1 - getPlayerPct();
+	}
 
 	//--------------------------------------------------------------
 	void setPlayToggle() {
@@ -144,7 +148,7 @@ public:
 
 private:
 
-	std::string name_Window = "-1";
+	std::string name_Instance = "-1";
 	//std::string name_SubPanel = "-1";
 
 public:
@@ -156,8 +160,8 @@ public:
 	}
 
 	//--------------------------------------------------------------
-	void setNameWindow(std::string name) {
-		name_Window = name;
+	void setNameInstance(std::string name) {
+		name_Instance = name;
 	}
 
 	////--------------------------------------------------------------
