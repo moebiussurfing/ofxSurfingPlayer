@@ -19,8 +19,13 @@ TODO:
 // -> Comment these two lines to completely disable the ImGui helpers and to use ofxGui!
 // -> Uncomment to use ImGui through ofxSurfingImGui
 
-#define USE__OFX_SURFING_IM_GUI // -> Optional. Uncomment to use inside an add-on with ImGui add-on.
-#define USE__OFX_IM_GUI_INSTANTIATED // -> Optional. Comment to just draw the widgets only. ImGui context will be instantiated outsite.
+// -> Optional. Uncomment to use inside an add-on with ImGui add-on.
+#define USE__OFX_SURFING_IM_GUI 
+
+// -> Optional. Comment to just draw the widgets only. 
+// ImGui context will be instantiated outsite.
+// that could be problematic bc some API features are then not allowed!
+#define USE__OFX_IM_GUI_INSTANTIATED 
 
 //----
 
@@ -161,6 +166,10 @@ public:
 
 	//--------------------------------------------------------------
 	void setNameInstance(std::string name) {
+		name_Instance = name;
+	}
+	//--------------------------------------------------------------
+	void setName(std::string name) {
 		name_Instance = name;
 	}
 

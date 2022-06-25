@@ -114,6 +114,7 @@ void SurfingPlayer::setup() {
 	// ImGui
 
 #ifdef USE__OFX_IM_GUI_INSTANTIATED 
+	guiManager.setName("Player");
 	guiManager.setup();
 #else
 #ifdef USE__OFX_SURFING_IM_GUI
@@ -127,7 +128,7 @@ void SurfingPlayer::setup() {
 
 	durationBpm = 120;
 
-	if (name_Instance == "-1") name_Instance = "PLAYER";
+	//if (name_Instance == "-1") name_Instance = "PLAYER";
 
 	ofxSurfingHelpers::loadGroup(params_AppSettings, path_GLOBAL + path_Params_AppSettings);
 }
@@ -245,11 +246,13 @@ void SurfingPlayer::draw_ImGui() {
 	guiManager.begin();
 	{
 		std::string n;
+		if (name_Instance == "-1") name_Instance = "";
 		n = name_Instance;
 
 		bOpen = (guiManager.beginWindow(bGui));
 
-		guiManager.AddLabelBig("PLAYER \n\n" + n, false);
+		n = "PLAYER \n\n" + n;
+		guiManager.AddLabelBig(n, false);
 
 #endif
 		//--
