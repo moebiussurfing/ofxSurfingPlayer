@@ -270,7 +270,7 @@ void SurfingPlayer::draw_ImGui() {
 
 			guiManager.AddSpacingSeparated();
 
-			ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 3.0f * _h * _r, "PLAYING", "PLAY", true, getPlayerProgress());
+			ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 5.0f * _h * _r, "PLAYING", "PLAY", true, getPlayerProgress());
 
 			// Beat Bang Trig
 			if (!bMinimize_Player)
@@ -290,7 +290,7 @@ void SurfingPlayer::draw_ImGui() {
 			ImGui::SameLine();
 			if (ImGui::Button("Double", ImVec2(_w2, _h))) { durationBpm *= 2.f; }
 
-			if (ImGui::Button("Reset", ImVec2(_w1, _h)))
+			if (ImGui::Button("Reset", ImVec2(_w1, 2 * _h)))
 			{
 				durationBpm = 120;
 			}
@@ -307,7 +307,7 @@ void SurfingPlayer::draw_ImGui() {
 
 			// Tap
 			//guiManager.Add(bpmTapTempo.bpm, OFX_IM_STEPPER);
-			if (guiManager.Add(bTap, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG))
+			if (guiManager.Add(bTap, bMinimize_Player ? OFX_IM_BUTTON_BIG : OFX_IM_BUTTON_BIG_XXL_BORDER))
 			{
 				bpmTapTempo.bang();
 			}
