@@ -56,14 +56,14 @@ void SurfingPlayer::setup() {
 	durationBpm.set("BPM", 120, 10, 400);
 	durationTime.set("ms", 0, 0, 400 * 8);
 	//durationTime.set("ms", 0, 0, 5000);
-	
+
 	//--
-	 
+
 	// We can manually trig to simulate the timed trigger
 	// Example: on ofxSurfingPResets,
 	// We will define the trig/bang/beat 
 	// to call "load next", "load random" or "random params"
-	 
+
 	//bPlayerBeatBang.set("Beat", false); 
 	bPlayerBeatBang.set("Bang", false);
 
@@ -264,17 +264,18 @@ void SurfingPlayer::draw_ImGui() {
 			float _w1 = ofxImGuiSurfing::getWidgetsWidth(1);
 			float _w2 = ofxImGuiSurfing::getWidgetsWidth(2);
 			float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
+			float _h2 = _h * 1.5f;
 			float _r = bMinimize_Player ? 0.5 : 1.0;
 
 			guiManager.Add(bMinimize_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
 
 			guiManager.AddSpacingSeparated();
 
-			ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 5.0f * _h * _r, "PLAYING", "PLAY", true, getPlayerProgress());
+			ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 4.0f * _h * _r, "PLAYING", "PLAY", true, getPlayerProgress());
 
 			// Beat Bang Trig
 			if (!bMinimize_Player)
-				if (!bPlay || !bMinimize_Player) 
+				if (!bPlay || !bMinimize_Player)
 				{
 					guiManager.Add(bPlayerBeatBang, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG);
 				}
@@ -290,7 +291,7 @@ void SurfingPlayer::draw_ImGui() {
 			ImGui::SameLine();
 			if (ImGui::Button("Double", ImVec2(_w2, _h))) { durationBpm *= 2.f; }
 
-			if (ImGui::Button("Reset", ImVec2(_w1, 2 * _h)))
+			if (ImGui::Button("Reset", ImVec2(_w1, bMinimize_Player ? _h : _h2)))
 			{
 				durationBpm = 120;
 			}
@@ -305,12 +306,36 @@ void SurfingPlayer::draw_ImGui() {
 
 			guiManager.AddSpacingSeparated();
 
-			// Tap
 			//guiManager.Add(bpmTapTempo.bpm, OFX_IM_STEPPER);
+
+			//--
+
+			// Tap
+
 			if (guiManager.Add(bTap, bMinimize_Player ? OFX_IM_BUTTON_BIG : OFX_IM_BUTTON_BIG_XXL_BORDER))
 			{
-				bpmTapTempo.bang();
+				//bpmTapTempo.bang();
+
+				//// workflow
+				//if (!bPlay.get()) {
+				//	bPlay = true;
+				//}
 			}
+
+			/* not works
+			if (ofxImGuiSurfing::AddBigToggleNamed(bTap, _w1, 4.0f * _h * _r, "TAP !", "TAP  ", true, getPlayerProgress()))
+			{
+				if (bTap)
+				{
+					bpmTapTempo.bang();
+
+					// workflow
+					if (!bPlay) {
+						bPlay = true;
+					}
+				}
+			}
+			*/
 
 			// Type target selector
 			if (typesTrigNames.size() > 0) { // bypass if not setted
@@ -350,27 +375,29 @@ void SurfingPlayer::draw_ImGui() {
 #endif
 }
 
-//--------------------------------------------------------------
-void SurfingPlayer::keyPressed(ofKeyEventArgs& eventArgs)
-{
-	const int key = eventArgs.key;
-
-	// Modifiers
-	bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
-	bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
-	bool mod_ALT = eventArgs.hasModifier(OF_KEY_ALT);
-	bool mod_SHIFT = eventArgs.hasModifier(OF_KEY_SHIFT);
-
-	ofLogNotice(__FUNCTION__) << " : " << key;
-
-	//--
-
-	if (0) {}
-
-	//else if (key == 'G' && !mod_ALT)
-	//{
-	//}
-}
+////--------------------------------------------------------------
+//void SurfingPlayer::keyPressed(ofKeyEventArgs& eventArgs)
+//{
+//	return;
+//
+//	const int key = eventArgs.key;
+//
+//	// Modifiers
+//	bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
+//	bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
+//	bool mod_ALT = eventArgs.hasModifier(OF_KEY_ALT);
+//	bool mod_SHIFT = eventArgs.hasModifier(OF_KEY_SHIFT);
+//
+//	ofLogNotice(__FUNCTION__) << " : " << key;
+//
+//	//--
+//
+//	if (0) {}
+//
+//	//else if (key == 'G' && !mod_ALT)
+//	//{
+//	//}
+//}
 
 //--------------------------------------------------------------
 void SurfingPlayer::Changed_Params_Player(ofAbstractParameter& e)
@@ -395,6 +422,11 @@ void SurfingPlayer::Changed_Params_Player(ofAbstractParameter& e)
 		if (bTap) {
 			bTap = false;
 			bpmTapTempo.bang();
+
+			// workflow
+			if (!bPlay.get()) {
+				bPlay = true;
+			}
 		}
 	}
 

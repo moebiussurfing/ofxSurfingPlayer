@@ -50,7 +50,7 @@ public:
 	void draw();
 	void draw_ImGui();
 	void update(ofEventArgs & args);
-	void keyPressed(ofKeyEventArgs &eventArgs);
+	//void keyPressed(ofKeyEventArgs &eventArgs);
 	void exit();
 
 private:
