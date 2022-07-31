@@ -302,8 +302,13 @@ void SurfingPlayer::draw_ImGui() {
 			if (!bMinimize_Player)
 			{
 				guiManager.AddSpacing();
+
 				guiManager.Add(bNaturizer);
-				guiManager.AddTooltip("Enable random BAR divider \nto behave more natural variation");
+				if (bNaturizer)
+					guiManager.AddTooltip("Random a BAR divider \nto behave more natural variation");
+				else 
+					guiManager.AddTooltip("Time between Bangs \nis a complete BAR");
+
 				//guiManager.Add(bNaturizer, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 				if (bNaturizer) {
 					guiManager.Add(naturizerPower, OFX_IM_SLIDER);

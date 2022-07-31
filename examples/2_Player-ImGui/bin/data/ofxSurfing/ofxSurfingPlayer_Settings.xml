@@ -3,10 +3,10 @@
         "BPM": "92.8793",
         "Beat_Widget": "1",
         "Minimize": "0",
-        "Naturizer": "1",
+        "Naturizer": "0",
         "PLAYER": "1",
         "Play": "1",
-        "PowerDiv": "3",
+        "PowerDiv": "2",
         "ms": "646"
     }
 }
