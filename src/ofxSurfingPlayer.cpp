@@ -250,17 +250,16 @@ void SurfingPlayer::draw_ImGui() {
 		n = name_Instance;
 
 		bOpen = (guiManager.beginWindow(bGui));
-
-		n = "PLAYER \n\n" + n;
-		guiManager.AddLabelBig(n, false);
-
+		if (bOpen) {
+			n = "PLAYER \n\n" + n;
+			guiManager.AddLabelBig(n, false);
+		}
 #endif
 		//--
 
 #ifdef USE__OFX_SURFING_IM_GUI
 
-		if (bOpen)
-		{
+		if (bOpen) {
 			float _w1 = ofxImGuiSurfing::getWidgetsWidth(1);
 			float _w2 = ofxImGuiSurfing::getWidgetsWidth(2);
 			float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
@@ -272,12 +271,15 @@ void SurfingPlayer::draw_ImGui() {
 			guiManager.AddSpacingSeparated();
 
 			ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 4.0f * _h * _r, "PLAYING", "PLAY", true, getPlayerProgress());
+			guiManager.AddTooltip("Play timed Bang trigger");
 
 			// Beat Bang Trig
 			if (!bMinimize_Player)
 				if (!bPlay || !bMinimize_Player)
 				{
 					guiManager.Add(bPlayerBeatBang, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG);
+
+					guiManager.AddTooltip("Trig a Bang manually!");
 				}
 
 			guiManager.AddSpacingSeparated();
@@ -288,9 +290,10 @@ void SurfingPlayer::draw_ImGui() {
 			guiManager.AddSpacing();
 
 			if (ImGui::Button("Half", ImVec2(_w2, _h))) { durationBpm /= 2.f; }
-			ImGui::SameLine();
-			if (ImGui::Button("Double", ImVec2(_w2, _h))) { durationBpm *= 2.f; }
 
+			ImGui::SameLine();
+
+			if (ImGui::Button("Double", ImVec2(_w2, _h))) { durationBpm *= 2.f; }
 			if (ImGui::Button("Reset", ImVec2(_w1, bMinimize_Player ? _h : _h2)))
 			{
 				durationBpm = 120;
@@ -300,8 +303,16 @@ void SurfingPlayer::draw_ImGui() {
 			{
 				guiManager.AddSpacing();
 				guiManager.Add(bNaturizer);
+				guiManager.AddTooltip("Enable random BAR divider \nto behave more natural variation");
 				//guiManager.Add(bNaturizer, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
-				if (bNaturizer)guiManager.Add(naturizerPower, OFX_IM_SLIDER);
+				if (bNaturizer) {
+					guiManager.Add(naturizerPower, OFX_IM_SLIDER);
+					string s = "Timer to complete BAR \nor to ";
+					if (naturizerPower == 2) s += "half";
+					else if (naturizerPower == 3) s += "third or half";
+					else if (naturizerPower == 4) s += "quarter, third or half";
+					guiManager.AddTooltip(s);
+				}
 			}
 
 			guiManager.AddSpacingSeparated();
@@ -354,6 +365,8 @@ void SurfingPlayer::draw_ImGui() {
 			{
 				guiManager.AddSpacingSeparated();
 				guiManager.Add(bGui_WidgetBeat, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+
+				guiManager.AddTooltip("Show Beat Widget");
 			}
 		}
 
@@ -363,8 +376,7 @@ void SurfingPlayer::draw_ImGui() {
 
 #ifdef USE__OFX_IM_GUI_INSTANTIATED 
 
-		if (bOpen)
-		{
+		if (bOpen) {
 			guiManager.endWindow();
 		}
 

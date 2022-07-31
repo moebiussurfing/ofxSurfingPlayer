@@ -147,6 +147,11 @@ public:
 		bPlay = !bPlay;
 	}
 
+	//--------------------------------------------------------------
+	void setVisibleToggle() {
+		bGui = !bGui;
+	}
+
 	//-
 
 	// Custom label for ImGui panels

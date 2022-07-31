@@ -1,12 +1,12 @@
 {
     "SurfingPlayer": {
-        "BPM": "120",
+        "BPM": "92.8793",
         "Beat_Widget": "1",
-        "Minimize": "1",
-        "Naturizer": "0",
+        "Minimize": "0",
+        "Naturizer": "1",
         "PLAYER": "1",
         "Play": "1",
         "PowerDiv": "4",
-        "ms": "500"
+        "ms": "646"
     }
 }

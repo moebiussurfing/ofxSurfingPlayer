@@ -13,9 +13,9 @@ void ofApp::setup() {
 	listener_Beat = surfingPlayer.bPlayerBeatBang.newListener([this](bool &b) {
 		ofLogNotice("Beat Bang : ") << (b ? "TRUE" : "FALSE");
 
-		// Do not know wich type triggered, just a bang.
+		// Do not know which type triggered, just a bang.
 		// Do something
-		// Flag the Bang! to be catched at update() / next frame.
+		// Flag the Bang! to be processed on update() / next frame.
 
 		bBang = true;
 	});
@@ -24,12 +24,12 @@ void ofApp::setup() {
 
 	// Different Triggers with a dropdown selector
 	// we pass a string vector with the names:
-	surfingPlayer.setTrigTypesNames({ "Type #1 - Preset", "Type #2 - Random", "Type #3 - Params" });
+	surfingPlayer.setTrigTypesNames({ "Type #1 - Next", "Type #2 - Random", "Type #3 - Params" });
 
 	// We will be notified when the type selector changed:
 	//--------------------------------------------------------------
 	listener_Type = surfingPlayer.typeTrig.newListener([this](int &i) {
-		ofLogNotice("Target type : ") << i;
+		ofLogNotice("Target type : ") << i + 1;
 
 		// Do something
 		a = 1.f; // Bg alpha to max / white (flash)
@@ -66,12 +66,12 @@ void ofApp::draw() {
 	ofColor color{ 128,0,255 };
 
 	// Print Bang!
-	ss = bBang ? "o" : " ";
+	ss = bBang ? "o" : "-";
 	ofDrawBitmapStringHighlight(ss, x, y);
 	y += 1.25 * h;
 
 	// Print the type selected
-	ss = "typeTrig #" + ofToString(surfingPlayer.typeTrig);
+	ss = "SELECTED: typeTrig #" + ofToString(surfingPlayer.typeTrig + 1);
 	ofDrawBitmapStringHighlight(ss, x, y);
 	y += 1.25 * h;
 
@@ -79,15 +79,15 @@ void ofApp::draw() {
 	// Each target will receive bangs when its selected.
 	// We will colorize the selected type
 
-	ss = "count Type #0: " + ofToString(countType0);
+	ss = "Type #0 Counter: " + ofToString(countType0);
 	ofDrawBitmapStringHighlight(ss, x, y, 0, (surfingPlayer.typeTrig == 0 ? color:255));
 	y += h;
 
-	ss = "count Type #1: " + ofToString(countType1);
+	ss = "Type #1 Counter: " + ofToString(countType1);
 	ofDrawBitmapStringHighlight(ss, x, y, 0, (surfingPlayer.typeTrig == 1 ? color : 255));
 	y += h;
 
-	ss = "count Type #2: " + ofToString(countType2);
+	ss = "Type #2 Counter: " + ofToString(countType2);
 	ofDrawBitmapStringHighlight(ss, x, y, 0, (surfingPlayer.typeTrig == 2 ? color : 255));
 	y += h;
 
@@ -98,11 +98,8 @@ void ofApp::draw() {
 	{
 		bBang = false;
 
-		//-
-
-		// Process the Bang here:
-
-		a = 1.f; // Bg alpha to max / white (flash)
+		// Process the Bang here,
+		// to which one is selected!
 
 		switch (surfingPlayer.typeTrig)
 		{
@@ -110,6 +107,12 @@ void ofApp::draw() {
 		case 1: countType1++; break;
 		case 2: countType2++; break;
 		}
+
+		//-
+
+		// Draw feedback
+		// BG alpha to max / white (flash)
+		a = 1.f; 
 	}
 
 	//-
@@ -118,6 +121,8 @@ void ofApp::draw() {
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key) {
+void ofApp::keyPressed(int key) 
+{
 	if (key == OF_KEY_RETURN) { surfingPlayer.setPlayToggle(); }
+	if (key == 'G') { surfingPlayer.setVisibleToggle(); }
 }
