@@ -349,9 +349,11 @@ void SurfingPlayer::draw_ImGui() {
 			*/
 
 			// Type target selector
-			if (typesTrigNames.size() > 0) { // bypass if not setted
+			if (typesTrigNames.size() > 0) { // bypass if not settled
 				if (!bMinimize_Player) {
 					ofxImGuiSurfing::AddCombo(typeTrig, typesTrigNames);
+
+					guiManager.AddTooltip("Select destination \nfor incoming Bangs");
 				}
 			}
 
