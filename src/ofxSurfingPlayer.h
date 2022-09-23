@@ -56,7 +56,7 @@ public:
 private:
 
 #ifdef USE__OFX_SURFING_IM_GUI
-	ofxSurfing_ImGui_Manager guiManager;
+	ofxSurfingGui ui;
 #endif
 
 	std::string path_GLOBAL = "ofxSurfing/";
