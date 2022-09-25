@@ -118,7 +118,9 @@ void SurfingPlayer::setup() {
 	ui.setup();
 #else
 #ifdef USE__OFX_SURFING_IM_GUI
-	ui.setup(ofxImGuiSurfing::IM_GUI_MODE_NOT_INSTANTIATED); // -> windows will be handle externally
+#ifndef USE__OFX_IM_GUI_EXTERNAL
+	//ui.setup(ofxImGuiSurfing::IM_GUI_MODE_NOT_INSTANTIATED); // -> windows will be handle externally
+#endif
 #endif
 #endif
 
@@ -234,6 +236,7 @@ void SurfingPlayer::draw() {
 
 //--------------------------------------------------------------
 void SurfingPlayer::draw_ImGui() {
+	if (!bGui) return;
 
 	// ImGui
 
@@ -242,7 +245,6 @@ void SurfingPlayer::draw_ImGui() {
 	//--
 
 #ifdef USE__OFX_IM_GUI_INSTANTIATED 
-
 	ui.Begin();
 	{
 		std::string n;
@@ -253,41 +255,48 @@ void SurfingPlayer::draw_ImGui() {
 		if (bOpen) {
 			//n = "PLAYER \n" + n;
 			ui.AddLabelBig(n, true);
-		}
+	}
+#endif
+		//--
+
+#ifdef USE__OFX_IM_GUI_EXTERNAL
+		if (ui->isThereSpecialWindowFor(bGui)) bOpen = (ui->BeginWindowSpecial(bGui));
+		else bOpen = (ui->BeginWindow(bGui));
 #endif
 		//--
 
 #ifdef USE__OFX_SURFING_IM_GUI
 
-		if (bOpen) {
+		if (bOpen)
+		{
 			float _w1 = ofxImGuiSurfing::getWidgetsWidth(1);
 			float _w2 = ofxImGuiSurfing::getWidgetsWidth(2);
 			float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
 			float _h2 = _h * 1.5f;
 			float _r = bMinimize_Player ? 0.5 : 1.0;
 
-			ui.Add(bMinimize_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+			ui->Add(bMinimize_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED);
 
-			ui.AddSpacingSeparated();
+			ui->AddSpacingSeparated();
 
 			ofxImGuiSurfing::AddBigToggleNamed(bPlay, _w1, 4.0f * _h * _r, "PLAYING", "PLAY", true, getPlayerProgress());
-			ui.AddTooltip("Play timed Bang trigger");
+			ui->AddTooltip("Play timed Bang trigger");
 
 			// Beat Bang Trig
 			if (!bMinimize_Player)
 				if (!bPlay || !bMinimize_Player)
 				{
-					ui.Add(bPlayerBeatBang, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG);
+					ui->Add(bPlayerBeatBang, bMinimize_Player ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_BIG);
 
-					ui.AddTooltip("Trig a Bang manually!");
+					ui->AddTooltip("Trig a Bang manually!");
 				}
 
-			ui.AddSpacingSeparated();
+			ui->AddSpacingSeparated();
 
-			ui.Add(durationTime, OFX_IM_SLIDER);
-			ui.Add(durationBpm, OFX_IM_SLIDER);
+			ui->Add(durationTime, OFX_IM_SLIDER);
+			ui->Add(durationBpm, OFX_IM_SLIDER);
 
-			ui.AddSpacing();
+			ui->AddSpacing();
 
 			if (ImGui::Button("Half", ImVec2(_w2, _h))) { durationBpm /= 2.f; }
 
@@ -301,34 +310,34 @@ void SurfingPlayer::draw_ImGui() {
 
 			if (!bMinimize_Player)
 			{
-				ui.AddSpacing();
+				ui->AddSpacing();
 
-				ui.Add(bNaturizer);
+				ui->Add(bNaturizer);
 				if (bNaturizer)
-					ui.AddTooltip("Random a BAR divider \nto behave more natural variation");
-				else 
-					ui.AddTooltip("Time between Bangs \nis a complete BAR");
+					ui->AddTooltip("Random a BAR divider \nto behave more natural variation");
+				else
+					ui->AddTooltip("Time between Bangs \nis a complete BAR");
 
-				//ui.Add(bNaturizer, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+				//ui->Add(bNaturizer, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 				if (bNaturizer) {
-					ui.Add(naturizerPower, OFX_IM_SLIDER);
+					ui->Add(naturizerPower, OFX_IM_SLIDER);
 					string s = "Timer to complete BAR \nor to ";
 					if (naturizerPower == 2) s += "half";
 					else if (naturizerPower == 3) s += "third or half";
 					else if (naturizerPower == 4) s += "quarter, third or half";
-					ui.AddTooltip(s);
+					ui->AddTooltip(s);
 				}
 			}
 
-			ui.AddSpacingSeparated();
+			ui->AddSpacingSeparated();
 
-			//ui.Add(bpmTapTempo.bpm, OFX_IM_STEPPER);
+			//ui->Add(bpmTapTempo.bpm, OFX_IM_STEPPER);
 
 			//--
 
 			// Tap
 
-			if (ui.Add(bTap, bMinimize_Player ? OFX_IM_BUTTON_BIG : OFX_IM_BUTTON_BIG_XXL_BORDER))
+			if (ui->Add(bTap, bMinimize_Player ? OFX_IM_BUTTON_BIG : OFX_IM_BUTTON_BIG_XXL_BORDER))
 			{
 				//bpmTapTempo.bang();
 
@@ -358,38 +367,43 @@ void SurfingPlayer::draw_ImGui() {
 				if (!bMinimize_Player) {
 					ofxImGuiSurfing::AddCombo(typeTrig, typesTrigNames);
 
-					ui.AddTooltip("Select destination \nfor incoming Bangs");
+					ui->AddTooltip("Select destination \nfor incoming Bangs");
 				}
 			}
 
 			// Progress
-			ui.Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
+			ui->Add(playerProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
 
 			//--
 
 			// Beat Circle
 			if (!bMinimize_Player)
 			{
-				ui.AddSpacingSeparated();
-				ui.Add(bGui_WidgetBeat, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+				ui->AddSpacingSeparated();
+				ui->Add(bGui_WidgetBeat, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 
-				ui.AddTooltip("Show Beat Widget");
+				ui->AddTooltip("Show Beat Widget");
 			}
 		}
 
 #endif
+		//--
 
+#ifdef USE__OFX_IM_GUI_EXTERNAL
+		if (ui->isThereSpecialWindowFor(bGui)) (ui->EndWindowSpecial());
+		else (ui->EndWindow());
+#endif
 		//--
 
 #ifdef USE__OFX_IM_GUI_INSTANTIATED 
 
 		if (bOpen) {
-			ui.EndWindow();
+			ui->EndWindow();
 		}
 
-		//-
+		//--
 	}
-	ui.End();
+	ui->End();
 
 #endif
 }

@@ -3,6 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup() {
 
+	surfingPlayer.setUiPtr(&ui);
+
 	//// Optional: Customize some text label
 	//surfingPlayer.setNamePanel("Camera");
 	//surfingPlayer.setNameSubPanel("My New Camera");
@@ -127,7 +129,11 @@ void ofApp::draw() {
 
 	//-
 
-	surfingPlayer.draw();
+	ui.Begin();
+	{
+		surfingPlayer.draw();
+	}
+	ui.End();
 }
 
 //--------------------------------------------------------------

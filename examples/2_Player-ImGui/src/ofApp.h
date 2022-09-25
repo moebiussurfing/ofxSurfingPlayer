@@ -3,6 +3,7 @@
 #include "ofMain.h"
 
 #include "ofxSurfingPlayer.h"
+#include "ofxSurfingImGui.h"
 
 /*
 	NOTE:
@@ -27,10 +28,12 @@ class ofApp : public ofBaseApp{
 		ofEventListener listener_Type; // Be notified when type changes
 		ofEventListener listener_Bpm; // Be notified when Bpm changes
 
-		ofxSurfing_ImGui_Manager guiManager;
+		ofxSurfingGui guiManager;
 
 		bool bBang = false; // True when Bang happens
 		
 		float a = 1;
 		int countType0, countType1, countType2;
+
+		ofxSurfingGui ui;
 };

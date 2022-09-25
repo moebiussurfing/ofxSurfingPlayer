@@ -22,10 +22,14 @@ TODO:
 // -> Optional. Uncomment to use inside an add-on with ImGui add-on.
 #define USE__OFX_SURFING_IM_GUI 
 
+#define USE__OFX_IM_GUI_EXTERNAL // ui instance is passed as reference / pointer.
+
+// Deprecated !
 // -> Optional. Comment to just draw the widgets only. 
-// ImGui context will be instantiated outsite.
+// ImGui context will be instantiated outside.
 // that could be problematic bc some API features are then not allowed!
-#define USE__OFX_IM_GUI_INSTANTIATED 
+//#define USE__OFX_IM_GUI_INSTANTIATED // removed! can't be used. must use as reference
+
 
 //----
 
@@ -56,8 +60,26 @@ public:
 private:
 
 #ifdef USE__OFX_SURFING_IM_GUI
+#ifndef USE__OFX_IM_GUI_EXTERNAL
 	ofxSurfingGui ui;
 #endif
+
+#ifdef USE__OFX_IM_GUI_EXTERNAL
+private:
+
+	ofxSurfingGui* ui;
+
+public:
+
+	void setUiPtr(ofxSurfingGui* _ui) {
+		ui = _ui;
+	}
+#endif
+#endif
+
+	//--
+
+private:
 
 	std::string path_GLOBAL = "ofxSurfing/";
 	std::string path_Params_AppSettings = "ofxSurfingPlayer_Settings.xml";
